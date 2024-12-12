@@ -31,7 +31,7 @@ jobs:
             - name: Build
               run: |
                     mkdir build output
-                    cd ../../build
+                    cd build
                     cmake -DPICO_BOARD=bbq20kbd_breakout -DCMAKE_BUILD_TYPE=Debug ..
                     make
                     cp app/i2c_puppet.{bin,elf,uf2} ../output
