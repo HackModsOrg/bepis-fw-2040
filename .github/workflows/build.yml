@@ -21,6 +21,7 @@ jobs:
             - name: Clone repo
               uses: actions/checkout@v2
               with:
+                submodules: 'true'
                 ref: ${{ github.event.client_payload.branch }}
 
             - name: Get short sha1
@@ -30,9 +31,6 @@ jobs:
             - name: Build
               run: |
                     mkdir build output
-                    git submodule update --init
-                    cd 3rdparty/pico-sdk
-                    git submodule update --init
                     cd ../../build
                     cmake -DPICO_BOARD=bbq20kbd_breakout -DCMAKE_BUILD_TYPE=Debug ..
                     make
