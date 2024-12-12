@@ -14,6 +14,7 @@
 #include "interrupt.h"
 #include "keyboard.h"
 #include "puppet_i2c.h"
+#include "usb.h"
 #include "reg.h"
 #include "touchpad.h"
 #include "pi.h"
@@ -34,6 +35,8 @@ static void gpio_irq(uint gpio, uint32_t events)
 int main(void)
 {
 	// This order is important because it determines callback call order
+
+    usb_init();
 
 #ifndef NDEBUG
 	debug_init();
