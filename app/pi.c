@@ -199,6 +199,7 @@ void pi_cancel_power_alarms()
 
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
+	#ifndef PIN_NEO_PIXEL
 	if (!enable) {
 		pwm_set_gpio_level(PIN_LED_R, 0xFFFF);
 		pwm_set_gpio_level(PIN_LED_G, 0xFFFF);
@@ -225,20 +226,19 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 	pwm_set_enabled(slice_r, true);
 	pwm_set_enabled(slice_g, true);
 	pwm_set_enabled(slice_b, true);
+	#endif
 
 }
 
 void led_init(void)
-{
+{	
+	#ifndef PIN_NEO_PIXEL
 	// Set up PWM channels
 	gpio_set_function(PIN_LED_R, GPIO_FUNC_PWM);
 	gpio_set_function(PIN_LED_G, GPIO_FUNC_PWM);
 	gpio_set_function(PIN_LED_B, GPIO_FUNC_PWM);
+	#endif
 
-	// Default off
-	g_led_state.setting = LED_SET_OFF;
-	g_led_flash_state.setting = LED_SET_OFF;
-	led_sync(true, 0, 0, 0);
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
