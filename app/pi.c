@@ -200,10 +200,17 @@ void pi_cancel_power_alarms()
 	}
 }
 
-static uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
+static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
   return ((uint32_t)(r) << 8) |
          ((uint32_t)(g) << 16) |
          (uint32_t)(b);
+}
+
+static inline uint32_t urgbw_u32(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
+    return  ((uint32_t) (r) << 8) |
+            ((uint32_t) (g) << 16) |
+            ((uint32_t) (w) << 24) |
+            (uint32_t) (b);
 }
 
 static inline void put_pixel(uint32_t pixel_grb) {
@@ -213,11 +220,11 @@ static inline void put_pixel(uint32_t pixel_grb) {
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
 	if (!enable) {
-		put_pixel(urgb_u32(0xff,0xff,0xff));
+		put_pixel(urgbw_u32(0xff,0xff,0xff,0xff));
 		return;
 	}
 
-	put_pixel(urgb_u32(r,g,b));
+	put_pixel(urgbw_u32(r,g,b,255));
 }
 
 void led_init(void)
@@ -235,7 +242,7 @@ void led_init(void)
 }
 
 void led_test(void) {
-	put_pixel(urgb_u32(255,255,255));
+	put_pixel(urgbw_u32(255,255,255,255));
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
