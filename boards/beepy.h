@@ -8,7 +8,7 @@
 #define PIN_BKL				25
 
 #define PIN_SDA				18
-#define PIN_SCL				23
+#define PIN_SCL				17
 
 #define PIN_TP_RESET		16
 #define PIN_TP_MOTION		22
