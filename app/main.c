@@ -72,7 +72,8 @@ int main(void)
 #endif
 
 	while (true) {
-		__wfe();
+		//__wfe();
+		led_test();
 	}
 
 	return 0;

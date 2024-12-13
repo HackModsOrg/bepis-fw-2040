@@ -36,6 +36,7 @@ struct led_state
 };
 
 void led_init(void);
+void led_test(void);
 void led_set(struct led_state const* state);
 
 void dormant_until_power_key_down(void);
