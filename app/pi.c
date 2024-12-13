@@ -232,7 +232,8 @@ void led_init(void)
 	// Default off
 	g_led_state.setting = LED_SET_OFF;
 	g_led_flash_state.setting = LED_SET_OFF;
-	led_sync(true, 100, 0, 0);
+	led_sync(true, 0, 0, 0);
+	put_pixel(urgb_u32(0xff, 0, 0));
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
