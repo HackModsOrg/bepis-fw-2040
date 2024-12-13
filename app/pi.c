@@ -197,43 +197,34 @@ void pi_cancel_power_alarms()
 	}
 }
 
+static uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
+  return ((uint32_t)(r) << 8) |
+         ((uint32_t)(g) << 16) |
+         (uint32_t)(b);
+}
+
+static inline void put_pixel(uint32_t pixel_grb) {
+  pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
+}
+
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
 	if (!enable) {
-		pwm_set_gpio_level(PIN_LED_R, 0xFFFF);
-		pwm_set_gpio_level(PIN_LED_G, 0xFFFF);
-		pwm_set_gpio_level(PIN_LED_B, 0xFFFF);
+		put_pixel(urgb_u32(0xff,0xff,0xff));
 		return;
 	}
 
-	// Set the PWM slice for each channel
-	uint slice_r = pwm_gpio_to_slice_num(PIN_LED_R);
-	uint slice_g = pwm_gpio_to_slice_num(PIN_LED_G);
-	uint slice_b = pwm_gpio_to_slice_num(PIN_LED_B);
-
-	// Calculate the PWM value for each channel
-	uint16_t pwm_r = (0xFF - r) * 0x101;
-	uint16_t pwm_g = (0xFF - g) * 0x101;
-	uint16_t pwm_b = (0xFF - b) * 0x101;
-
-	// Set the PWM duty cycle for each channel
-	pwm_set_gpio_level(PIN_LED_R, pwm_r);
-	pwm_set_gpio_level(PIN_LED_G, pwm_g);
-	pwm_set_gpio_level(PIN_LED_B, pwm_b);
-
-	// Enable PWM channels
-	pwm_set_enabled(slice_r, true);
-	pwm_set_enabled(slice_g, true);
-	pwm_set_enabled(slice_b, true);
+	put_pixel(urgb_u32(r,g,b));
 
 }
 
 void led_init(void)
 {
-	// Set up PWM channels
-	gpio_set_function(PIN_LED_R, GPIO_FUNC_PWM);
-	gpio_set_function(PIN_LED_G, GPIO_FUNC_PWM);
-	gpio_set_function(PIN_LED_B, GPIO_FUNC_PWM);
+	PIO pio = pio0;
+  	int sm = 0;
+ 	uint offset = pio_add_program(pio, &ws2812_program);
+
+	ws2812_program_init(pio, sm, offset, PIN_LED, 800000, true);
 
 	// Default off
 	g_led_state.setting = LED_SET_OFF;

@@ -20,9 +20,10 @@
 /** beeper specific pins **/
 #define PIN_PI_PWR 15
 #define PIN_PI_SHUTDOWN 21
-#define PIN_LED_R 20
-#define PIN_LED_G 19
-#define PIN_LED_B 17
+//#define PIN_LED_R 20
+//#define PIN_LED_G 19
+//#define PIN_LED_B 17
+#define PIN_LED	23	// TODO: to be changed according to beepy pinout, set to 23 for use with current board
 #define PIN_BAT_ADC 26
 
 #define NUM_OF_ROWS			7

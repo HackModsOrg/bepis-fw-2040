@@ -35,6 +35,9 @@ struct led_state
 	uint8_t r, g, b;
 };
 
+uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
+static inline void put_pixel(uint32_t pixel_grb);
+
 void led_init(void);
 void led_set(struct led_state const* state);
 
