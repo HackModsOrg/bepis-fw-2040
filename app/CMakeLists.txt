@@ -22,7 +22,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 target_include_directories(firmware PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
-pico_generate_pio_header(pico-neopixel ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+pico_generate_pio_header(firmware ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
 
 target_link_libraries(firmware
 	cmsis_core
