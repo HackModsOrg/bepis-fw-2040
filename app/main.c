@@ -72,7 +72,8 @@ int main(void)
 #endif
 
 	while (true) {
-		__wfe();
+		//__wfe();
+		led_sync(true, 255, 255, 255);
 	}
 
 	return 0;
