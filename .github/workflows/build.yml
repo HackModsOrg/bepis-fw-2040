@@ -21,7 +21,7 @@ jobs:
             - name: Clone repo
               uses: actions/checkout@v2
               with:
-                submodules: 'true'
+                submodules: 'recursive'
                 ref: ${{ github.event.client_payload.branch }}
 
             - name: Get short sha1
@@ -34,7 +34,7 @@ jobs:
                     cd build
                     cmake -DPICO_BOARD=bbq20kbd_breakout -DCMAKE_BUILD_TYPE=Debug ..
                     make
-                    cp app/i2c_puppet.{bin,elf,uf2} ../output
+                    cp i2c_puppet.{bin,elf,uf2} ../output
 
             - name: Upload package artifact
               uses: actions/upload-artifact@v4
