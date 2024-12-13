@@ -22,6 +22,8 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 target_include_directories(firmware PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
+pico_generate_pio_header(pico-neopixel ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+
 target_link_libraries(firmware
 	cmsis_core
 	hardware_i2c
@@ -30,6 +32,7 @@ target_link_libraries(firmware
 	hardware_rtc
 	hardware_flash
 	hardware_sleep
+	hardware_pio
 	pico_bootsel_via_double_reset
 	pico_stdlib
 	tinyusb_device

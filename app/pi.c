@@ -7,6 +7,9 @@
 #include "hardware/adc.h"
 #include <hardware/pwm.h>
 
+#include "ws2812.pio.h"
+#include "hardware/pio.h"
+
 #include "hardware/clocks.h"
 #include "hardware/rosc.h"
 #include "hardware/structs/scb.h"
