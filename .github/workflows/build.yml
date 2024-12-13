@@ -32,7 +32,7 @@ jobs:
               run: |
                     mkdir build output
                     cd build
-                    cmake -DPICO_BOARD=bbq20kbd_breakout -DCMAKE_BUILD_TYPE=Debug -DPICO_FLASH_SIZE_BYTES=16*1024*1024 ..
+                    cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
                     make
                     cp i2c_puppet.{bin,elf,uf2} ../output
 
