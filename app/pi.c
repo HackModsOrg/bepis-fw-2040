@@ -229,9 +229,9 @@ void led_init(void)
 	ws2812_program_init(pio, sm, offset, PIN_LED, 800000, true);
 
 	// Default off
-	g_led_state.setting = LED_SET_OFF;
-	g_led_flash_state.setting = LED_SET_OFF;
-	led_sync(true, 0, 0, 0);
+	g_led_state.setting = LED_SET_ON;
+	g_led_flash_state.setting = LED_SET_ON;
+	led_sync(true, 255, 255, 255);
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
