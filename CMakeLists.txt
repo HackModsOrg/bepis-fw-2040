@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 set(PICO_PLATFORM "rp2040")
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
+set(PICO_SDK_PATH 3rdparty/pico-sdk)
 
 # Pull in SDK (must be before project)
 include(3rdparty/pico-extras/pico_sdk_import.cmake)
