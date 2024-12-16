@@ -1,4 +1,5 @@
 #include "pi.h"
+#include "mcp23017.h"
 #include "reg.h"
 #include "keyboard.h"
 #include "gpioexp.h"
@@ -41,9 +42,9 @@ void pi_power_init(void)
 	adc_gpio_init(PIN_BAT_ADC);
 	adc_select_input(0);
 
-	gpio_init(PIN_PI_PWR);
-	gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
-	gpio_put(PIN_PI_PWR, 0);
+	// gpio_init(PIN_PI_PWR); we don't have that on mcp
+	mcp23017_gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
+	mcp23017_gpio_put(PIN_PI_PWR, 0);
 	g_pi_state = PI_STATE_OFF;
 }
 
@@ -55,7 +56,7 @@ void pi_power_on(enum power_on_reason reason)
 		return;
 	}
 
-	gpio_put(PIN_PI_PWR, 1);
+	mcp23017_gpio_put(PIN_PI_PWR, 1);
 	g_pi_state = PI_STATE_ON;
 
 	// Clear any input queued while Pi was off
@@ -78,7 +79,7 @@ void pi_power_off(void)
 		return;
 	}
 
-	gpio_put(PIN_PI_PWR, 0);
+	mcp23017_gpio_put(PIN_PI_PWR, 0);
 	g_pi_state = PI_STATE_OFF;
 }
 
