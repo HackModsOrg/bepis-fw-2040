@@ -13,6 +13,10 @@ static uint16_t GPPU  = 0x0000; // pull ups
 void mcp23017_init(void) {
     i2c = get_shared_i2c_instance();
 
+    gpio_init(PIN_MCP_REST);
+    gpio_set_dir(PIN_MCP_REST, true);
+    gpio_put(PIN_MCP_REST, true);
+
 }
 
 uint8_t get_bit_pos(uint8_t gpio) {
@@ -25,7 +29,7 @@ uint8_t get_bit_pos(uint8_t gpio) {
     return pos;
 }
 
-uint16_t gpio_bit_set(uint8_t gpio,bool set, uint16_t value) {
+uint16_t gpio_bit_set(uint8_t gpio,uint8_t set, uint16_t value) {
     if (set) {
         value = value || 1 << get_bit_pos(gpio);
     } else {
@@ -52,19 +56,19 @@ void mcp_write_u16(uint8_t reg, uint16_t val)
 	i2c_write_blocking(i2c, MCP_ADDR, buffer, sizeof(buffer), false);
 }
 
-void mcp23017_gpio_irq(uint gpio, uint32_t events) {
+void mcp23017_gpio_irq(uint8_t gpio, uint32_t events) {
     if ((gpio != PIN_MCP_INT) || !(events & GPIO_IRQ_EDGE_FALL)) {
 		return;
 	}
     // TODO: this can be done later but yeah some basic stuff is already
 }
 
-void mcp23017_gpio_put(uint8_t gpio, bool value) {
+void mcp23017_gpio_put(uint8_t gpio, uint8_t value) {
     GPIO = gpio_bit_set(gpio, value, GPIO);
     mcp_write_u16(0x12, GPIO);
 }
 
-void mcp23017_gpio_set_dir(uint8_t gpio, bool out) {
+void mcp23017_gpio_set_dir(uint8_t gpio, uint8_t out) {
     IODIR = gpio_bit_set(gpio, out, IODIR);
     mcp_write_u16(0x00, IODIR);
 
