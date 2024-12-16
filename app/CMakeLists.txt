@@ -9,7 +9,9 @@ add_executable(firmware
 	interrupt.c
 	keyboard.c
 	main.c
+	mcp23017.c
 	reg.c
+	shared_i2c.c
 	touchpad.c
 	usb.c
 	usb_descriptors.c

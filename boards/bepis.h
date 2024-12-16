@@ -29,7 +29,7 @@
 **/
 #define PIN_BAT_ADC 26
 
-/** Bepis specific pins **/
+/** Bepis specific pins and config **/
 
 #define PIN_USB_MUX_SEL 30
 #define PIN_FUSB_MUX_SEL 31
@@ -44,6 +44,8 @@
 #define PIN_CHG_DIS 32
 #define PIN_CHG_PWR 34
 #define PIN_5V_PGOOD 36
+
+#define MCP_ADDR 0x3B
 
 #define NUM_OF_ROWS			7
 #define PINS_ROWS \
