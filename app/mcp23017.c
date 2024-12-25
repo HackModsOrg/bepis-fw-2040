@@ -3,6 +3,11 @@
 #include <stdio.h>
 
 #include "shared_i2c.h"
+#include "mcp23017.h"
+
+#define OLAT_REG 0x14
+#define GPIO_REG 0x00
+#define GPPU_REG 0x0C
 
 static i2c_inst_t* i2c = NULL;
 
@@ -16,6 +21,15 @@ void mcp23017_init(void) {
     gpio_init(PIN_MCP_REST);
     gpio_set_dir(PIN_MCP_REST, true);
     gpio_put(PIN_MCP_REST, true);
+    
+
+    // some need setup that will be moved later
+    mcp23017_gpio_set_dir(PIN_USB_MUX_SEL, true);
+    mcp23017_gpio_put(PIN_USB_MUX_SEL, false);
+
+    // some visual debug
+    mcp23017_gpio_set_dir(PIN_CHG_DIS, true);
+    mcp23017_gpio_put(PIN_CHG_DIS, true);
 
 }
 
@@ -30,10 +44,10 @@ uint8_t get_bit_pos(uint8_t gpio) {
 }
 
 uint16_t gpio_bit_set(uint8_t gpio,uint8_t set, uint16_t value) {
-    if (set) {
-        value = value || 1 << get_bit_pos(gpio);
-    } else {
-        value = value && !(1 << get_bit_pos(gpio));
+    if (set) { // set bit
+        value = value | 1 << get_bit_pos(gpio);
+    } else { // clear bit
+        value = value & ~(1 << get_bit_pos(gpio));
     }
     return value;
 }
@@ -52,7 +66,7 @@ uint16_t mcp_read_u16(uint8_t reg)
 
 void mcp_write_u16(uint8_t reg, uint16_t val)
 {        
-	uint8_t buffer[3] = { reg, (uint8_t)((val) >> 8), (uint8_t)((val))};
+	uint8_t buffer[3] = { reg, (uint8_t)(val >> 8), (uint8_t)(val)};
 	i2c_write_blocking(i2c, MCP_ADDR, buffer, sizeof(buffer), false);
 }
 
@@ -65,21 +79,21 @@ void mcp23017_gpio_irq(uint8_t gpio, uint32_t events) {
 
 void mcp23017_gpio_put(uint8_t gpio, uint8_t value) {
     GPIO = gpio_bit_set(gpio, value, GPIO);
-    mcp_write_u16(0x12, GPIO);
+    mcp_write_u16(OLAT_REG, GPIO);
 }
 
 void mcp23017_gpio_set_dir(uint8_t gpio, uint8_t out) {
-    IODIR = gpio_bit_set(gpio, out, IODIR);
-    mcp_write_u16(0x00, IODIR);
+    IODIR = gpio_bit_set(gpio, !out, IODIR);
+    mcp_write_u16(GPIO_REG, IODIR);
 
 }
 
 void mcp23017_gpio_pull_up(uint8_t gpio) {
     IODIR = gpio_bit_set(gpio, true, IODIR);
-    mcp_write_u16(0x0C, IODIR);
+    mcp_write_u16(GPPU_REG, IODIR);
 }
 
 void mcp23017_gpio_disable_pulls(uint8_t gpio) {
     GPPU = gpio_bit_set(gpio, false, GPPU);
-    mcp_write_u16(0x0C, GPPU);
+    mcp_write_u16(GPPU_REG, GPPU);
 }
