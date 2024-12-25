@@ -18,6 +18,8 @@
 #include "reg.h"
 #include "touchpad.h"
 #include "pi.h"
+#include "shared_i2c.h"
+#include "mcp23017.h"
 
 // https://github.com/micropython/micropython/blob/5114f2c1ea7c05fc7ab920299967595cfc5307de/ports/rp2/modmachine.c#L179
 // https://github.com/raspberrypi/pico-extras/issues/41
@@ -42,7 +44,11 @@ int main(void)
 	debug_init();
 #endif
 
+	setup_shared_i2c();
+
 	rtc_init();
+
+	mcp23017_init();
 
 	reg_init();
 

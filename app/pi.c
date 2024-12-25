@@ -1,4 +1,5 @@
 #include "pi.h"
+#include "mcp23017.h"
 #include "reg.h"
 #include "keyboard.h"
 #include "gpioexp.h"
@@ -44,9 +45,9 @@ void pi_power_init(void)
 	adc_gpio_init(PIN_BAT_ADC);
 	adc_select_input(0);
 
-	gpio_init(PIN_PI_PWR);
-	gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
-	gpio_put(PIN_PI_PWR, 0);
+	// gpio_init(PIN_PI_PWR); we don't have that on mcp
+	mcp23017_gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
+	mcp23017_gpio_put(PIN_PI_PWR, 0);
 	g_pi_state = PI_STATE_OFF;
 }
 
@@ -58,7 +59,7 @@ void pi_power_on(enum power_on_reason reason)
 		return;
 	}
 
-	gpio_put(PIN_PI_PWR, 1);
+	mcp23017_gpio_put(PIN_PI_PWR, 1);
 	g_pi_state = PI_STATE_ON;
 
 	// Clear any input queued while Pi was off
@@ -81,7 +82,7 @@ void pi_power_off(void)
 		return;
 	}
 
-	gpio_put(PIN_PI_PWR, 0);
+	mcp23017_gpio_put(PIN_PI_PWR, 0);
 	g_pi_state = PI_STATE_OFF;
 }
 
@@ -219,26 +220,60 @@ static inline void put_pixel(uint32_t pixel_grb) {
 
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
+	#ifdef PIN_NEO_PIXEL
 	if (!enable) {
 		put_pixel(urgbw_u32(0xff,0xff,0xff,0xff));
 		return;
 	}
 
 	put_pixel(urgbw_u32(r,g,b,255));
+	#endif
+	#ifndef PIN_NEO_PIXEL
+	if (!enable) {
+		pwm_set_gpio_level(PIN_LED_R, 0xFFFF);
+		pwm_set_gpio_level(PIN_LED_G, 0xFFFF);
+		pwm_set_gpio_level(PIN_LED_B, 0xFFFF);
+		return;
+	}
+	// Set the PWM slice for each channel
+	uint slice_r = pwm_gpio_to_slice_num(PIN_LED_R);
+	uint slice_g = pwm_gpio_to_slice_num(PIN_LED_G);
+	uint slice_b = pwm_gpio_to_slice_num(PIN_LED_B);
+
+	// Calculate the PWM value for each channel
+	uint16_t pwm_r = (0xFF - r) * 0x101;
+	uint16_t pwm_g = (0xFF - g) * 0x101;
+	uint16_t pwm_b = (0xFF - b) * 0x101;
+
+	// Set the PWM duty cycle for each channel
+	pwm_set_gpio_level(PIN_LED_R, pwm_r);
+	pwm_set_gpio_level(PIN_LED_G, pwm_g);
+	pwm_set_gpio_level(PIN_LED_B, pwm_b);
+
+	// Enable PWM channels
+	pwm_set_enabled(slice_r, true);
+	pwm_set_enabled(slice_g, true);
+	pwm_set_enabled(slice_b, true);
+	#endif
+
 }
 
 void led_init(void)
 {
+	#ifndef PIN_NEO_PIXEL
+	// Set up PWM channels
+	gpio_set_function(PIN_LED_R, GPIO_FUNC_PWM);
+	gpio_set_function(PIN_LED_G, GPIO_FUNC_PWM);
+	gpio_set_function(PIN_LED_B, GPIO_FUNC_PWM);
+	#endif
+    #ifdef PIN_NEO_PIXEL
 	PIO pio = pio0;
   	int sm = 0;
  	uint offset = pio_add_program(pio, &ws2812_program);
 
-	ws2812_program_init(pio, sm, offset, PIN_LED, 800000, true);
+	ws2812_program_init(pio, sm, offset, PIN_NEO_PIXEL, 800000, true);
+	#endif
 
-	// Default off
-	g_led_state.setting = LED_SET_OFF;
-	g_led_flash_state.setting = LED_SET_OFF;
-	led_sync(true, 0, 0, 0);
 }
 
 void led_test(void) {

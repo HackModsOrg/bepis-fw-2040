@@ -1,3 +1,5 @@
+// We are probly not gonna be compat with beepy or the bbq20kdb breadkout but maybe ...
+// The PINs of the MCP are numbered as if they are part of the rp so A0 is 30 , B0 is 38 and B7 is 46
 #pragma once
 
 #define USB_VID				0x1209
@@ -8,22 +10,42 @@
 #define PIN_BKL				25
 
 #define PIN_SDA				18
-#define PIN_SCL				17
+#define PIN_SCL				23
 
-#define PIN_TP_RESET		16
+#define PIN_TP_RESET		37
 #define PIN_TP_MOTION		22
-#define PIN_TP_SHUTDOWN		24
+#define PIN_TP_SHUTDOWN		33
 
 #define PIN_PUPPET_SDA		28
 #define PIN_PUPPET_SCL		29
 
 /** beeper specific pins **/
-#define PIN_PI_PWR 15
-#define PIN_PI_SHUTDOWN 21
+#define PIN_PI_PWR 35
+#define PIN_PI_SHUTDOWN 45
+/** Bepis use NEOPIXEL
 #define PIN_LED_R 20
 #define PIN_LED_G 19
 #define PIN_LED_B 17
+**/
 #define PIN_BAT_ADC 26
+
+/** Bepis specific pins and config **/
+
+#define PIN_USB_MUX_SEL 30
+#define PIN_FUSB_MUX_SEL 31
+#define PIN_BUZZER 15
+#define PIN_MCP_REST 17
+#define PIN_MCP_INT  16 // EX_INT in schematic
+#define PIN_NEO_PIXEL 20
+#define PIN_VIBRO_DRV 21
+#define PIN_LCDBL_DRV 24
+#define PIN_DISP_EXTIN_e 38
+#define PIN_DISP_REST 39
+#define PIN_CHG_DIS 32
+#define PIN_CHG_PWR 34
+#define PIN_5V_PGOOD 36
+
+#define MCP_ADDR 0x22
 
 #define NUM_OF_ROWS			7
 #define PINS_ROWS \
