@@ -45,7 +45,7 @@
 #define PIN_CHG_PWR 34
 #define PIN_5V_PGOOD 36
 
-#define MCP_ADDR 0x3B
+#define MCP_ADDR 0x22
 
 #define NUM_OF_ROWS			7
 #define PINS_ROWS \
