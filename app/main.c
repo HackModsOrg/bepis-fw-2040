@@ -44,7 +44,7 @@ int main(void)
 	debug_init();
 #endif
 
-    sleep_ms(3500);
+	sleep_ms(3000);
 
 	setup_shared_i2c();
 
@@ -76,7 +76,7 @@ int main(void)
 	printf("gpioexp init\r\n");
 #endif
 
-	gpioexp_init();
+	//gpioexp_init();
 
 #ifndef NDEBUG
 	printf("keeb init\r\n");
@@ -125,7 +125,6 @@ int main(void)
 
 	while (true) {
 		__wfe();
-		//led_test();
 	}
 
 	return 0;
