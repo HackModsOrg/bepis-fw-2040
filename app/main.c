@@ -44,30 +44,76 @@ int main(void)
 	debug_init();
 #endif
 
+    sleep_ms(3500);
+
 	setup_shared_i2c();
+
+#ifndef NDEBUG
+	printf("rtc init\r\n");
+#endif
 
 	rtc_init();
 
+#ifndef NDEBUG
+	printf("mcp init\r\n");
+#endif
+
 	mcp23017_init();
+
+#ifndef NDEBUG
+	printf("reg init\r\n");
+#endif
 
 	reg_init();
 
+#ifndef NDEBUG
+	printf("bl init\r\n");
+#endif
+
 	backlight_init();
+
+#ifndef NDEBUG
+	printf("gpioexp init\r\n");
+#endif
 
 	gpioexp_init();
 
+#ifndef NDEBUG
+	printf("keeb init\r\n");
+#endif
+
 	keyboard_init();
+
+#ifndef NDEBUG
+	printf("touch init\r\n");
+#endif
 
 	touchpad_init();
 
+#ifndef NDEBUG
+	printf("int init\r\n");
+#endif
+
 	interrupt_init();
 
+#ifndef NDEBUG
+	printf("ppt init\r\n");
+#endif
+
 	puppet_i2c_init();
+
+#ifndef NDEBUG
+	printf("led init\r\n");
+#endif
 
 	led_init();
 
 	// For now, the `gpio` param is ignored and all enabled GPIOs generate the irq
 	gpio_set_irq_enabled_with_callback(0xFF, 0, true, &gpio_irq);
+
+#ifndef NDEBUG
+	printf("pipwr init\r\n");
+#endif
 
 	pi_power_init();
 
@@ -78,8 +124,8 @@ int main(void)
 #endif
 
 	while (true) {
-		//__wfe();
-		led_test();
+		__wfe();
+		//led_test();
 	}
 
 	return 0;
