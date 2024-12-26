@@ -44,6 +44,8 @@ int main(void)
 	debug_init();
 #endif
 
+	sleep_ms(3000);
+
 	setup_shared_i2c();
 
 	rtc_init();
@@ -54,7 +56,7 @@ int main(void)
 
 	backlight_init();
 
-	gpioexp_init();
+	//gpioexp_init();
 
 	keyboard_init();
 
@@ -78,8 +80,7 @@ int main(void)
 #endif
 
 	while (true) {
-		//__wfe();
-		led_test();
+		__wfe();
 	}
 
 	return 0;
