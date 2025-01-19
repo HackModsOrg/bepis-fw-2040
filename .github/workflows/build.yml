@@ -32,7 +32,7 @@ jobs:
               run: |
                     mkdir build output
                     cd build
-                    cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
+                    cmake -DPICO_BOARD=bepis -DCMAKE_BUILD_TYPE=Debug ..
                     make
                     cp i2c_puppet.uf2 ../output
 
@@ -40,4 +40,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 path: output
-                name: i2c_puppet-bbq20kbd_breakout-${{ steps.short_sha1.outputs.value }}
+                name: rp2040fw-bepis-${{ steps.short_sha1.outputs.value }}
