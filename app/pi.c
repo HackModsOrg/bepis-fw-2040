@@ -48,6 +48,8 @@ void pi_power_init(void)
 	// gpio_init(PIN_PI_PWR); we don't have that on mcp
 	mcp23017_gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
 	mcp23017_gpio_put(PIN_PI_PWR, 0);
+	mcp23017_gpio_set_dir(PIN_DISP_RST, GPIO_OUT);
+	mcp23017_gpio_put(PIN_DISP_RST, 1);
 	g_pi_state = PI_STATE_OFF;
 }
 
@@ -58,7 +60,8 @@ void pi_power_on(enum power_on_reason reason)
 	if (g_pi_state == PI_STATE_ON) {
 		return;
 	}
-
+	
+	mcp23017_gpio_put(PIN_DISP_RST, 1); //display RST starts out deasserted
 	mcp23017_gpio_put(PIN_PI_PWR, 1);
 	g_pi_state = PI_STATE_ON;
 
@@ -74,6 +77,10 @@ void pi_power_on(enum power_on_reason reason)
 
 	// Update startup reason
 	reg_set_value(REG_ID_STARTUP_REASON, reason);
+	mcp23017_gpio_put(PIN_DISP_RST, 0); // Assert display RESET
+	// Wait a little and bring the display out of RESET
+	sleep_ms(500);
+	mcp23017_gpio_put(PIN_DISP_RST, 1);
 }
 
 void pi_power_off(void)
