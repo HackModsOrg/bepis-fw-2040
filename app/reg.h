@@ -60,6 +60,14 @@ enum reg_id
 	REG_ID_TOUCHPAD_MIN_SQUAL = 0x42, // Minimum sensor reading quality
 	REG_ID_TOUCHPAD_LED = 0x43, // Sensor LED power (0x0 med, 0x3 high, 0x5 low)
 
+	REG_ID_BEEPIS_DISPLAY_RSET = 0x50,
+	REG_ID_BEEPIS_BUZZER_FREQ = 0x51,
+	REG_ID_BEEPIS_BUZZER_DUTY = 0x52,
+	REG_ID_BEEPIS_VIBRO_FREQ = 0x53,
+	REG_ID_BEEPIS_VIBROR_DUTY = 0x54,
+
+
+
 	REG_ID_LAST,
 };
 
