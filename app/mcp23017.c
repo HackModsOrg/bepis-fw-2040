@@ -27,10 +27,15 @@ void mcp23017_init(void) {
     mcp23017_gpio_set_dir(PIN_USB_MUX_SEL, true);
     mcp23017_gpio_put(PIN_USB_MUX_SEL, false);
 
-    // some visual debug
     mcp23017_gpio_set_dir(PIN_CHG_DIS, true);
-    mcp23017_gpio_put(PIN_CHG_DIS, true);
 
+    #ifndef NDEBUG
+        // some visual debug - disabling the charger IC and its associated LEDs
+        mcp23017_gpio_put(PIN_CHG_DIS, true);
+        sleep_ms(500);
+    #endif
+
+    mcp23017_gpio_put(PIN_CHG_DIS, false); // enabling charging
 }
 
 uint8_t get_bit_pos(uint8_t gpio) {

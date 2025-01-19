@@ -40,7 +40,7 @@
 #define PIN_VIBRO_DRV 21
 #define PIN_LCDBL_DRV 24
 #define PIN_DISP_EXTIN_e 38
-#define PIN_DISP_REST 39
+#define PIN_DISP_RST 39
 #define PIN_CHG_DIS 32
 #define PIN_CHG_PWR 34
 #define PIN_5V_PGOOD 36
