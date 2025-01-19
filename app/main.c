@@ -121,9 +121,15 @@ int main(void)
 
 #ifndef NDEBUG
 	printf("Starting main loop\r\n");
+    uint16_t i = 0;
 #endif
 
 	while (true) {
+        #ifndef NDEBUG
+        // constantly prints an incrementing counter, helping make sure that the code isn't stuck at some point
+        i++;
+	    printf("loop iter %d\r\n", i);
+        #endif
 		__wfe();
 	}
 
