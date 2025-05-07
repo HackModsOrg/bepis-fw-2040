@@ -40,89 +40,89 @@ int main(void)
 
     usb_init();
 
-#ifndef NDEBUG
-	debug_init();
-#endif
+    #ifndef NDEBUG
+	    debug_init();
+    #endif
 
 	sleep_ms(3000);
 
 	setup_shared_i2c();
 
-#ifndef NDEBUG
-	printf("rtc init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("rtc init\r\n");
+    #endif
 
 	rtc_init();
 
-#ifndef NDEBUG
-	printf("mcp init\r\n");
-#endif
+        #ifndef NDEBUG
+	        printf("mcp init\r\n");
+        #endif
 
 	mcp23017_init();
 
-#ifndef NDEBUG
-	printf("reg init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("reg init\r\n");
+    #endif
 
 	reg_init();
 
-#ifndef NDEBUG
-	printf("bl init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("bl init\r\n");
+    #endif
 
 	backlight_init();
 
-#ifndef NDEBUG
-	printf("gpioexp init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("gpioexp init\r\n");
+    #endif
 
 	//gpioexp_init();
 
-#ifndef NDEBUG
-	printf("keeb init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("keeb init\r\n");
+    #endif
 
 	keyboard_init();
 
-#ifndef NDEBUG
-	printf("touch init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("touch init\r\n");
+    #endif
 
 	touchpad_init();
 
-#ifndef NDEBUG
-	printf("int init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("int init\r\n");
+    #endif
 
 	interrupt_init();
 
-#ifndef NDEBUG
-	printf("ppt init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("ppt init\r\n");
+    #endif
 
 	puppet_i2c_init();
 
-#ifndef NDEBUG
-	printf("led init\r\n");
-#endif
+    #ifndef NDEBUG
+    	printf("led init\r\n");
+    #endif
 
 	led_init();
 
 	// For now, the `gpio` param is ignored and all enabled GPIOs generate the irq
 	gpio_set_irq_enabled_with_callback(0xFF, 0, true, &gpio_irq);
 
-#ifndef NDEBUG
-	printf("pipwr init\r\n");
-#endif
+    #ifndef NDEBUG
+	    printf("pipwr init\r\n");
+    #endif
 
 	pi_power_init();
 
 	pi_power_on(POWER_ON_FW_INIT);
 
-#ifndef NDEBUG
-	printf("Starting main loop\r\n");
-    uint16_t i = 0;
-#endif
+    #ifndef NDEBUG
+	    printf("Starting main loop\r\n");
+        uint16_t i = 0;
+    #endif
 
 	while (true) {
         #ifndef NDEBUG
