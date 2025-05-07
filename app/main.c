@@ -128,7 +128,9 @@ int main(void)
         #ifndef NDEBUG
         // constantly prints an incrementing counter, helping make sure that the code isn't stuck at some point
         i++;
-	    printf("loop iter %d\r\n", i);
+        if (i % 10000 == 0) {
+            printf("loop iter %d\r\n", i);
+        }
         #endif
 		__wfe();
 	}
