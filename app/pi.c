@@ -229,7 +229,7 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
 	#ifdef PIN_NEO_PIXEL
 	if (!enable) {
-		put_pixel(urgbw_u32(0xff,0xff,0xff,0xff));
+		put_pixel(urgbw_u32(0x00,0x00,0x00,0x00));
 		return;
 	}
 
