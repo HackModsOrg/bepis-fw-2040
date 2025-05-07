@@ -17,6 +17,9 @@
 
 #include <pico/stdlib.h>
 #include <pico/sleep.h>
+#ifndef NDEBUG
+    #include <stdio.h>
+#endif
 
 #define LED_FLASH_CYCLE_MS 3000
 #define LED_FLASH_ON_MS 200
@@ -229,9 +232,15 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
 	#ifdef PIN_NEO_PIXEL
 	if (!enable) {
+        #ifndef NDEBUG
+            printf("led: 0x%02X/0x%02X/0x%02X\r\n", 0, 0, 0);
+        #endif
 		put_pixel(urgbw_u32(0x00,0x00,0x00,0x00));
 		return;
 	}
+    #ifndef NDEBUG
+        printf("led: 0x%02X/0x%02X/0x%02X\r\n", r, g, b);
+    #endif
 
 	put_pixel(urgbw_u32(r,g,b,255));
 	#endif
