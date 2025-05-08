@@ -106,13 +106,13 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 		if (is_write) {
 			switch (reg) {
 			case REG_ID_DIR:
-				gpioexp_update_dir(in_data);
+				//gpioexp_update_dir(in_data);
 				break;
 			case REG_ID_PUE:
-				gpioexp_update_pue_pud(in_data, reg_get_value(REG_ID_PUD));
+				//gpioexp_update_pue_pud(in_data, reg_get_value(REG_ID_PUD));
 				break;
 			case REG_ID_PUD:
-				gpioexp_update_pue_pud(reg_get_value(REG_ID_PUE), in_data);
+				//gpioexp_update_pue_pud(reg_get_value(REG_ID_PUE), in_data);
 				break;
 			}
 		} else {
