@@ -12,7 +12,7 @@
 static i2c_inst_t* i2c = NULL;
 
 static uint16_t IODIR = 0xffff; // Default are pins are inputs
-static uint16_t GPIO  = 0x0000; // Default are outputs are off    
+static uint16_t GPIO  = 0x0000; // Default are outputs are off
 static uint16_t GPPU  = 0x0000; // pull ups
 
 void mcp23017_init(void) {
@@ -21,7 +21,6 @@ void mcp23017_init(void) {
     gpio_init(PIN_MCP_REST);
     gpio_set_dir(PIN_MCP_REST, true);
     gpio_put(PIN_MCP_REST, true);
-    
 
     // some need setup that will be moved later
     mcp23017_gpio_set_dir(PIN_USB_MUX_SEL, true);
@@ -70,7 +69,7 @@ uint16_t mcp_read_u16(uint8_t reg)
 }
 
 void mcp_write_u16(uint8_t reg, uint16_t val)
-{        
+{
 	uint8_t buffer[3] = { reg, (uint8_t)(val >> 8), (uint8_t)(val)};
 	i2c_write_blocking(i2c, MCP_ADDR, buffer, sizeof(buffer), false);
 }

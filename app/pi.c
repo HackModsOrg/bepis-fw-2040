@@ -63,7 +63,7 @@ void pi_power_on(enum power_on_reason reason)
 	if (g_pi_state == PI_STATE_ON) {
 		return;
 	}
-	
+
 	mcp23017_gpio_put(PIN_DISP_RST, 1); //display RST starts out deasserted
 	mcp23017_gpio_put(PIN_PI_PWR, 1);
 	g_pi_state = PI_STATE_ON;
