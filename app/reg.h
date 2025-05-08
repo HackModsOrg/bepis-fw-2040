@@ -61,6 +61,11 @@ enum reg_id
 	REG_ID_TOUCHPAD_LED = 0x43, // Sensor LED power (0x0 med, 0x3 high, 0x5 low)
 
     REG_ID_VBR = 0x50,
+    REG_ID_MUX = 0x51,
+    REG_ID_PWR = 0x52,
+    REG_ID_DSP = 0x53,
+    REG_ID_BZR = 0x54,
+    REG_ID_BZ2 = 0x55,
 
 	REG_ID_LAST,
 };
@@ -100,6 +105,16 @@ enum reg_id
 
 #define PUD_DOWN			0
 #define PUD_UP				1
+
+#define MUX_USB              (1 << 0)
+#define MUX_FUSB             (1 << 1)
+
+#define PWR_CHGDIS          (1 << 0)
+#define PWR_CHGPWR          (1 << 1)
+#define PWR_5VGOOD          (1 << 2)
+
+#define DSP_RST              (1 << 0)
+#define DSP_EXTCI            (1 << 1)
 
 #define VER_VAL				((VERSION_MAJOR << 4) | (VERSION_MINOR << 0))
 

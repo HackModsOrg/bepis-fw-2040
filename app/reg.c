@@ -2,7 +2,9 @@
 
 #include "app_config.h"
 #include "backlight.h"
+
 #include "vibromotor.h"
+#include "peripherals.h"
 #include "fifo.h"
 #include "gpioexp.h"
 #include "puppet_i2c.h"
@@ -121,6 +123,65 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 		}
 		break;
 	}
+
+    // charger interface (charging power, charging enable)
+    #ifdef PIN_CHG_DIS
+    case REG_ID_PWR: // power settings/state
+    {
+		if (is_write) {
+            // only react if the bits have changed
+            bool chgdis_set = reg_is_bit_set(REG_ID_PWR, PWR_CHGDIS);
+            bool chgpwr_set = reg_is_bit_set(REG_ID_PWR, PWR_CHGPWR);
+			reg_set_value(reg, in_data);
+            if (reg_is_bit_set(REG_ID_PWR, PWR_CHGDIS) != chgdis_set) {
+                if (reg_is_bit_set(REG_ID_PWR, PWR_CHGDIS)) {
+                    charger_disable();
+                } else {
+                    charger_enable();
+                }
+            }
+            if (reg_is_bit_set(REG_ID_PWR, PWR_CHGPWR) != chgpwr_set) {
+                if (reg_is_bit_set(REG_ID_PWR, PWR_CHGPWR)) {
+                    charger_hipwr();
+                } else {
+                    charger_lopwr();
+                }
+            }
+		} else {
+			out_buffer[0] = reg_get_value(reg);
+			*out_len = sizeof(uint8_t);
+        }
+		break;
+    }
+
+    case REG_ID_MUX: // power settings/state
+    {
+		if (is_write) {
+            // only react if the bits have changed
+            bool muxusb_set = reg_is_bit_set(REG_ID_MUX, MUX_USB);
+            bool muxfusb_set = reg_is_bit_set(REG_ID_MUX, MUX_FUSB);
+			reg_set_value(reg, in_data);
+            if (reg_is_bit_set(REG_ID_MUX, MUX_USB) != muxusb_set) {
+                if (reg_is_bit_set(REG_ID_MUX, MUX_USB)) {
+                    usbmux_high();
+                } else {
+                    usbmux_low();
+                }
+            }
+            if (reg_is_bit_set(REG_ID_MUX, MUX_FUSB) != muxfusb_set) {
+                if (reg_is_bit_set(REG_ID_MUX, MUX_FUSB)) {
+                    fusbmux_high();
+                } else {
+                    fusbmux_low();
+                }
+            }
+		} else {
+			out_buffer[0] = reg_get_value(reg);
+			*out_len = sizeof(uint8_t);
+        }
+		break;
+    }
+    #endif
 
 	case REG_ID_TOUCHPAD_REG:
 		if (is_write) {
@@ -416,6 +477,8 @@ void reg_init(void)
 	reg_set_value(REG_ID_SHUTDOWN_GRACE, 30);
 
 	reg_set_value(REG_ID_TOUCHPAD_MIN_SQUAL, 16);
+
+	reg_set_value(REG_ID_MUX, 0x02); // fusb mux high by default, usb mux low
 
 	touchpad_add_touch_callback(&touch_callback);
 }

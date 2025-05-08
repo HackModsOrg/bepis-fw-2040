@@ -32,19 +32,20 @@
 /** Bepis specific pins and config **/
 
 #define HAS_MCP23017 1
-#define PIN_USB_MUX_SEL 30
-#define PIN_FUSB_MUX_SEL 31
+
+#define PIN_USB_MUX_SEL 30 // 0x51 //
+#define PIN_FUSB_MUX_SEL 31 // 0x51 //
 #define PIN_BUZZER 15
-#define PIN_MCP_REST 17
+#define PIN_MCP_REST 17 // internal
 #define PIN_MCP_INT  16 // EX_INT in schematic
-#define PIN_NEO_PIXEL 20
-#define PIN_VIBRO_DRV 21
-#define PIN_LCDBL_DRV 24
-#define PIN_DISP_EXTIN 38
-#define PIN_DISP_RST 39
-#define PIN_CHG_DIS 32
-#define PIN_CHG_PWR 34
-#define PIN_5V_PGOOD 36
+#define PIN_NEO_PIXEL 20 // internal
+#define PIN_VIBRO_DRV 21 // 0x50 //
+#define PIN_LCDBL_DRV 24 // BKL //
+#define PIN_DISP_EXTIN 38 // 0x53 //
+#define PIN_DISP_RST 39  // 0x53 //
+#define PIN_CHG_DIS 32 // 0x52 //
+#define PIN_CHG_PWR 34 // 0x52 //
+#define PIN_5V_PGOOD 36 // 0x52 //
 
 #define MCP_ADDR 0x22
 

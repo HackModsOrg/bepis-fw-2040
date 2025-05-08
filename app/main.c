@@ -9,7 +9,6 @@
 #include "hardware/structs/scb.h"
 
 #include "backlight.h"
-#include "vibromotor.h"
 #include "debug.h"
 #include "gpioexp.h"
 #include "interrupt.h"
@@ -21,7 +20,13 @@
 #include "pi.h"
 #include "shared_i2c.h"
 #ifdef HAS_MCP23017
-#include "mcp23017.h"
+    #include "mcp23017.h"
+#endif
+#ifdef PIN_VIBRO_DRV
+    #include "vibromotor.h"
+#endif
+#ifdef PIN_CHG_PWR
+    #include "peripherals.h"
 #endif
 
 // https://github.com/micropython/micropython/blob/5114f2c1ea7c05fc7ab920299967595cfc5307de/ports/rp2/modmachine.c#L179
@@ -72,11 +77,12 @@ int main(void)
 	reg_init();
 
     #ifndef NDEBUG
-	    printf("bl&vbr init\r\n");
+	    printf("peripheral init\r\n");
     #endif
 
 	backlight_init();
 	vibromotor_init();
+    peripherals_init();
 
     #ifndef NDEBUG
 	    printf("gpioexp init\r\n");
