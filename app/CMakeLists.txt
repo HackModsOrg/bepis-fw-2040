@@ -2,6 +2,7 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(firmware
 	backlight.c
+	vibromotor.c
 	debug.c
 	fifo.c
 	gpioexp.c

@@ -9,6 +9,7 @@
 #include "hardware/structs/scb.h"
 
 #include "backlight.h"
+#include "vibromotor.h"
 #include "debug.h"
 #include "gpioexp.h"
 #include "interrupt.h"
@@ -67,10 +68,11 @@ int main(void)
 	reg_init();
 
     #ifndef NDEBUG
-	    printf("bl init\r\n");
+	    printf("bl&vbr init\r\n");
     #endif
 
 	backlight_init();
+	vibromotor_init();
 
     #ifndef NDEBUG
 	    printf("gpioexp init\r\n");

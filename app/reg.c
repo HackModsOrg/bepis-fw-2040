@@ -2,6 +2,7 @@
 
 #include "app_config.h"
 #include "backlight.h"
+#include "vibromotor.h"
 #include "fifo.h"
 #include "gpioexp.h"
 #include "puppet_i2c.h"
@@ -68,6 +69,7 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 	case REG_ID_CF2:
 	case REG_ID_SHUTDOWN_GRACE:
 	case REG_ID_TOUCHPAD_MIN_SQUAL:
+	case REG_ID_VBR:
 	{
 		if (is_write) {
 			reg_set_value(reg, in_data);
@@ -77,6 +79,10 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 			case REG_ID_BK2:
 				backlight_sync();
 				break;
+
+            case REG_ID_VBR:
+                vibromotor_sync();
+                break;
 
 			case REG_ID_ADR:
 				puppet_i2c_sync_address();
