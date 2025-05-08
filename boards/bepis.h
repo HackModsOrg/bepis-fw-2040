@@ -31,6 +31,7 @@
 
 /** Bepis specific pins and config **/
 
+#define HAS_MCP23017 1
 #define PIN_USB_MUX_SEL 30
 #define PIN_FUSB_MUX_SEL 31
 #define PIN_BUZZER 15

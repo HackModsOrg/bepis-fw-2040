@@ -20,7 +20,9 @@
 #include "touchpad.h"
 #include "pi.h"
 #include "shared_i2c.h"
+#ifdef HAS_MCP23017
 #include "mcp23017.h"
+#endif
 
 // https://github.com/micropython/micropython/blob/5114f2c1ea7c05fc7ab920299967595cfc5307de/ports/rp2/modmachine.c#L179
 // https://github.com/raspberrypi/pico-extras/issues/41
@@ -55,11 +57,13 @@ int main(void)
 
 	rtc_init();
 
+    #ifdef HAS_MCP23017
         #ifndef NDEBUG
 	        printf("mcp init\r\n");
         #endif
 
 	mcp23017_init();
+    #endif
 
     #ifndef NDEBUG
 	    printf("reg init\r\n");
