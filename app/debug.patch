@@ -1,0 +1,98 @@
+diff --git a/app/keyboard.c b/app/keyboard.c
+index 8c9d9d5..9e58b3f 100644
+--- a/app/keyboard.c
++++ b/app/keyboard.c
+@@ -270,7 +270,7 @@ static int64_t timer_task(alarm_id_t id, void *user_data)
+ #endif
+ 
+ 	// negative value means interval since last alarm time
+-	return -(reg_get_value(REG_ID_FRQ) * 1000);
++	return -(reg_get_value_quiet(REG_ID_FRQ) * 1000);
+ }
+ 
+ void keyboard_inject_event(uint8_t key, enum key_state state)
+@@ -404,5 +404,5 @@ void keyboard_init(void)
+ 	sym_hold_key.col = 1;
+ 	sym_hold_key.state = KEY_STATE_IDLE;
+ 
+-	add_alarm_in_ms(reg_get_value(REG_ID_FRQ), timer_task, NULL, true);
++	add_alarm_in_ms(reg_get_value_quiet(REG_ID_FRQ), timer_task, NULL, true);
+ }
+diff --git a/app/reg.c b/app/reg.c
+index 412100c..0fe7539 100644
+--- a/app/reg.c
++++ b/app/reg.c
+@@ -20,7 +20,7 @@
+ #include <stdio.h>
+ 
+ // We don't enable this by default cause it spams quite a lot
+-//#define DEBUG_REGS
++#define DEBUG_REGS
+ 
+ static struct
+ {
+@@ -50,7 +50,9 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
+ 	const uint8_t reg = (in_reg & ~PACKET_WRITE_MASK);
+ 	uint16_t adc_value;
+ 
+-//	printf("read complete, is_write: %d, reg: 0x%02X\r\n", is_write, reg);
++    #ifndef NDEBUG
++	printf("read complete, is_write: %d, reg: 0x%02X\r\n", is_write, reg);
++    #endif
+ 
+ 	*out_len = 0;
+ 
+@@ -423,6 +425,14 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
+ }
+ 
+ uint8_t reg_get_value(enum reg_id reg)
++{
++#ifdef DEBUG_REGS
++	printf("%s: reg: 0x%02X, val: 0x%02X\r\n", __func__, reg, self.regs[reg]);
++#endif
++	return self.regs[reg];
++}
++
++uint8_t reg_get_value_quiet(enum reg_id reg)
+ {
+ 	return self.regs[reg];
+ }
+diff --git a/app/reg.h b/app/reg.h
+index d428105..4ab2827 100644
+--- a/app/reg.h
++++ b/app/reg.h
+@@ -123,6 +123,7 @@ enum reg_id
+ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, uint8_t *out_len);
+ 
+ uint8_t reg_get_value(enum reg_id reg);
++uint8_t reg_get_value_quiet(enum reg_id reg);
+ void reg_set_value(enum reg_id reg, uint8_t value);
+ 
+ bool reg_is_bit_set(enum reg_id reg, uint8_t bit);
+diff --git a/app/touchpad.c b/app/touchpad.c
+index 2558bbb..0b44451 100644
+--- a/app/touchpad.c
++++ b/app/touchpad.c
+@@ -104,7 +104,7 @@ void touchpad_gpio_irq(uint gpio, uint32_t events)
+ 
+ 		// Reject if surface quality is below threshold
+ 		if (touchpad_read_i2c_u8(REG_SQUAL)
+-		  < reg_get_value(REG_ID_TOUCHPAD_MIN_SQUAL)) {
++		  < reg_get_value_quiet(REG_ID_TOUCHPAD_MIN_SQUAL)) {
+ 			return;
+ 		}
+ 
+diff --git a/app/usb.c b/app/usb.c
+index 875908d..05e5095 100644
+--- a/app/usb.c
++++ b/app/usb.c
+@@ -84,6 +84,9 @@ static struct key_callback key_callback = { .func = key_cb };
+ 
+ static void touch_cb(int8_t x, int8_t y)
+ {
++    if (!tud_ready()) {
++        return;
++    }
+ 	if (!tud_hid_n_ready(USB_ITF_MOUSE) || !reg_is_bit_set(REG_ID_CF2, CF2_USB_MOUSE_ON))
+ 		return;
+ 
