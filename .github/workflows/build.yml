@@ -35,7 +35,7 @@ jobs:
                     cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
                     make
                     mv *.uf2 ../output/
-                    cmake -DPICO_BOARD=blepisv1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POLICY_VERSION_MINIMUM=3.4 ..
+                    cmake -DPICO_BOARD=blepisv1 -DCMAKE_BUILD_TYPE=Debug ..
                     make
                     mv *.uf2 ../output/
                     #cmake -DPICO_BOARD=blepisv2 -DCMAKE_BUILD_TYPE=Debug ..
