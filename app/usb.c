@@ -115,7 +115,9 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
 	(void)len;
 }
 
-void tud_vendor_rx_cb(uint8_t itf)
+// commenting it out; purpose's unclear (afaict it's from the bbq20 keeb), and it fails on pico-sdk 2.1.1 anyway
+/*
+void tud_vendor_rx_cb(uint8_t itf, uint8_t const* buffer, uint16_t bufsize)
 {
 //	printf("%s: itf: %d, avail: %d\r\n", __func__, itf, tud_vendor_n_available(itf));
 
@@ -127,6 +129,7 @@ void tud_vendor_rx_cb(uint8_t itf)
 
 	tud_vendor_n_write(itf, self.write_buffer, self.write_len);
 }
+*/
 
 void tud_mount_cb(void)
 {
