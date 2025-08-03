@@ -30,7 +30,7 @@ jobs:
 
             - name: Build
               run: |
-                    mkdir build output
+                    mkdir -p build output
                     cd build
                     cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
                     make
