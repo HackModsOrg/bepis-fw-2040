@@ -34,13 +34,12 @@ jobs:
                     cd build
                     cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
                     make
-                    mv *.uf2 ../output/
                     cmake -DPICO_BOARD=blepisv1 -DCMAKE_BUILD_TYPE=Debug ..
                     make
-                    mv *.uf2 ../output/
                     #cmake -DPICO_BOARD=blepisv2 -DCMAKE_BUILD_TYPE=Debug ..
                     #make
-                    #mv *.uf2 ../output/
+                    rm pico-flashloader.uf2
+                    mv *.uf2 ../output/
 
             - name: Upload package artifact
               uses: actions/upload-artifact@v4
