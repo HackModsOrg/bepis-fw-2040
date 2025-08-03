@@ -34,13 +34,13 @@ jobs:
                     cd build
                     cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
                     make
-                    cp i2c_puppet.uf2 ../output/beepy.uf2
+                    mv *.uf2 ../output/
                     cmake -DPICO_BOARD=blepisv1 -DCMAKE_BUILD_TYPE=Debug ..
                     make
-                    cp i2c_puppet.uf2 ../output/blepis_v1.uf2
+                    mv *.uf2 ../output/
                     #cmake -DPICO_BOARD=blepisv2 -DCMAKE_BUILD_TYPE=Debug ..
                     #make
-                    #cp i2c_puppet.uf2 ../output/blepisv2.uf2
+                    mv *.uf2 ../output/
 
             - name: Upload package artifact
               uses: actions/upload-artifact@v4

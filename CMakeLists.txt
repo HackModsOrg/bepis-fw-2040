@@ -8,7 +8,15 @@ set(PICO_SDK_PATH ../3rdparty/pico-sdk)
 include(3rdparty/pico-extras/pico_sdk_import.cmake)
 include(3rdparty/pico-extras/external/pico_extras_import.cmake)
 
-set(PROJECT i2c_puppet)
+if(PICO_BOARD STREQUAL "blepisv1")
+    set(PROJECT blepisv1)
+elseif (PICO_BOARD STREQUAL "blepisv2")
+    set(PROJECT blepisv1)
+elseif (PICO_BOARD STREQUAL "beepy")
+    set(PROJECT beepy)
+else()
+    set(PROJECT i2c_puppet)
+endif()
 
 project(${PROJECT} C CXX)
 
@@ -85,7 +93,7 @@ set(FIRMWARE_UF2 ${CMAKE_CURRENT_BINARY_DIR}/app/firmware.uf2)
 
 ################################################################################
 # Combine the flashloader and application into one flashable UF2 image
-set(COMPLETE_UF2 ${CMAKE_CURRENT_BINARY_DIR}/i2c_puppet.uf2)
+set(COMPLETE_UF2 ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT}.uf2)
 
 find_package (Python3 REQUIRED COMPONENTS Interpreter)
 add_custom_command(OUTPUT ${COMPLETE_UF2} DEPENDS ${FLASHLOADER} firmware
