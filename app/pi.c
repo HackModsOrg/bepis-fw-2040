@@ -429,7 +429,7 @@ static void sleep_resume(struct sleep_state const* ss)
 	scb_hw->scr = ss->scb_orig;
 	clocks_hw->sleep_en0 = ss->clock0_orig;
 	clocks_hw->sleep_en1 = ss->clock1_orig;
-	clocks_init();
+    runtime_init_clocks();
 
 	// Restore LED and keyboard states
 	led_set(&ss->led_state);

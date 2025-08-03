@@ -26,8 +26,8 @@ pico_sdk_init()
 set(FLASHLOADER_DIR ${CMAKE_CURRENT_LIST_DIR}/3rdparty/pico-flashloader)
 
 # Need at least SDK v1.3.0 (due to https://github.com/raspberrypi/pico-sdk/issues/573)
-if(${PICO_SDK_VERSION_STRING} VERSION_LESS "1.3.0")
-    message(FATAL_ERROR "Pico SDK v1.3.0 or greater is required.  You have ${PICO_SDK_VERSION_STRING}")
+if(${PICO_SDK_VERSION_STRING} VERSION_LESS "2.0.0")
+    message(FATAL_ERROR "Pico SDK v2.0.0 or greater is required.  You have ${PICO_SDK_VERSION_STRING}")
 endif()
 
 ################################################################################
@@ -62,14 +62,18 @@ target_link_libraries(${FLASHLOADER} PRIVATE
         hardware_clocks
         hardware_pll
         hardware_dma
-        hardware_sleep
         pico_platform
         pico_standard_link
+        pico_crt0
+        pico_runtime_headers
         pico_divider
         )
 
 pico_add_uf2_output(${FLASHLOADER})
+pico_add_hex_output(${FLASHLOADER})
 pico_set_program_name(${FLASHLOADER} ${FLASHLOADER})
+pico_minimize_runtime(${FLASHLOADER} EXCLUDE ALL)
+
 target_compile_options(${FLASHLOADER} PRIVATE -Wall -Wextra -Wno-ignored-qualifiers -Os)
 
 # Use a separate linker script for the flashloader to make sure it is built
