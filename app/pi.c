@@ -1,16 +1,20 @@
 #include "pi.h"
-#include "gpioexp.h"
 #include "gpio.h"
 #include "reg.h"
 #include "keyboard.h"
-#include "gpioexp.h"
 #include "backlight.h"
 #include "fifo.h"
 #include "hardware/adc.h"
 #include <hardware/pwm.h>
 
+#ifdef BEEPY
+#include "gpioexp.h"
+#endif
+
+#ifdef PIN_NEO_PIXEL
 #include "ws2812.pio.h"
 #include "hardware/pio.h"
+#endif
 
 #include "hardware/clocks.h"
 #include "hardware/rosc.h"
@@ -231,9 +235,11 @@ static inline uint32_t urgbw_u32(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
             (uint32_t) (b);
 }
 
+#ifdef PIN_NEO_PIXEL
 static inline void put_pixel(uint32_t pixel_grb) {
   pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
 }
+#endif
 
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -300,7 +306,9 @@ void led_init(void)
 }
 
 void led_test(void) {
+	#ifdef PIN_NEO_PIXEL
 	put_pixel(urgbw_u32(255,255,255,255));
+    #endif
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
