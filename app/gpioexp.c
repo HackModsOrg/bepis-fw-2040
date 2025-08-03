@@ -1,5 +1,6 @@
 #include "gpioexp.h"
 #include "reg.h"
+#include "gpio.h"
 
 #include <pico/stdlib.h>
 #include <stdio.h>
@@ -15,7 +16,7 @@ static void set_dir(uint8_t gpio, uint8_t gpio_idx, uint8_t dir)
 	printf("%s: gpio: %d, gpio_idx: %d, dir: %d\r\n", __func__, gpio, gpio_idx, dir);
 #endif
 
-	gpio_init(gpio);
+	uni_gpio_init(gpio);
 
 	if (dir == DIR_INPUT) {
 		if (reg_is_bit_set(REG_ID_PUE, (1 << gpio_idx))) {
@@ -28,7 +29,7 @@ static void set_dir(uint8_t gpio, uint8_t gpio_idx, uint8_t dir)
 			gpio_disable_pulls(gpio);
 		}
 
-		gpio_set_dir(gpio, GPIO_IN);
+		uni_gpio_set_dir(gpio, GPIO_IN);
 
 		gpio_set_irq_enabled(gpio, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
 
@@ -36,7 +37,7 @@ static void set_dir(uint8_t gpio, uint8_t gpio_idx, uint8_t dir)
 	} else {
 		gpio_set_irq_enabled(gpio, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, false);
 
-		gpio_set_dir(gpio, GPIO_OUT);
+		uni_gpio_set_dir(gpio, GPIO_OUT);
 
 		reg_clear_bit(REG_ID_DIR, (1 << gpio_idx));
 	}
@@ -186,7 +187,7 @@ void gpioexp_set_value(uint8_t value)
 
 #define SET_VALUE(bit) \
 	if (reg_is_bit_set(REG_ID_DIR, (1 << bit)) == DIR_OUTPUT) { \
-		gpio_put(PIN_GPIOEXP ## bit, (value & (1 << bit))); \
+		uni_gpio_put(PIN_GPIOEXP ## bit, (value & (1 << bit))); \
 	}
 
 #ifdef PIN_GPIOEXP0
@@ -220,7 +221,7 @@ uint8_t gpioexp_get_value(void)
 	uint8_t value = 0;
 
 #define GET_VALUE(bit) \
-	value |= (gpio_get(PIN_GPIOEXP ## bit) << bit);
+	value |= (uni_gpio_get(PIN_GPIOEXP ## bit) << bit);
 
 #ifdef PIN_GPIOEXP0
 	GET_VALUE(0)

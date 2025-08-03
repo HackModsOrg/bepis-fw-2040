@@ -1,5 +1,5 @@
 #include "touchpad.h"
-
+#include "gpio.h"
 #include "keyboard.h"
 
 #include <hardware/i2c.h>
@@ -9,7 +9,6 @@
 
 #include "reg.h"
 #include "shared_i2c.h"
-#include "mcp23017.h"
 
 #define DEV_ADDR			0x3B
 
@@ -144,20 +143,20 @@ void touchpad_init()
 	// determine the instance based on SCL pin, hope you didn't screw up the SDA pin!
 	self.i2c = get_shared_i2c_instance();
 
-	// gpio_init(PIN_TP_SHUTDOWN); we don't have this on MCP
-	mcp23017_gpio_set_dir(PIN_TP_SHUTDOWN, GPIO_OUT);
-	mcp23017_gpio_put(PIN_TP_SHUTDOWN, 0);
+	uni_gpio_init(PIN_TP_SHUTDOWN);
+	uni_gpio_set_dir(PIN_TP_SHUTDOWN, GPIO_OUT);
+	uni_gpio_put(PIN_TP_SHUTDOWN, 0);
 
 	gpio_init(PIN_TP_MOTION);
 	gpio_set_dir(PIN_TP_MOTION, GPIO_IN);
 	gpio_set_irq_enabled(PIN_TP_MOTION, GPIO_IRQ_EDGE_FALL, true);
 
-	// gpio_init(PIN_TP_RESET); DON't have on MCP
-	mcp23017_gpio_set_dir(PIN_TP_RESET, GPIO_OUT);
+	uni_gpio_init(PIN_TP_RESET);
+	uni_gpio_set_dir(PIN_TP_RESET, GPIO_OUT);
 
-	mcp23017_gpio_put(PIN_TP_RESET, 0);
+	uni_gpio_put(PIN_TP_RESET, 0);
 	sleep_ms(100);
-	mcp23017_gpio_put(PIN_TP_RESET, 1);
+	uni_gpio_put(PIN_TP_RESET, 1);
 
 	// Invert X motion
 	val = touchpad_read_i2c_u8(REG_ORIENTATION);

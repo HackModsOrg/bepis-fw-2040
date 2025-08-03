@@ -19,6 +19,9 @@
 #define PIN_PUPPET_SDA		28
 #define PIN_PUPPET_SCL		29
 
+#define BLEPIS
+#define BLEPIS_V2
+
 /** beeper specific pins **/
 #define PIN_PI_PWR 35
 #define PIN_PI_SHUTDOWN 45
@@ -30,8 +33,6 @@
 #define PIN_BAT_ADC 26
 
 /** Bepis specific pins and config **/
-
-#define HAS_MCP23017 1
 
 #define PIN_USB_MUX_SEL 30 // 0x51 //
 #define PIN_FUSB_MUX_SEL 31 // 0x51 //

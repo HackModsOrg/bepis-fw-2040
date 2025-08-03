@@ -1,17 +1,35 @@
 set(CMAKE_C_STANDARD 11)
 
+if((PICO_BOARD STREQUAL "blepisv1") OR (PICO_BOARD STREQUAL "blepisv2"))
+    # idk how to do "startswith" lol
+    set(EXTRA_SOURCES vibromotor.c peripherals.c mcp23017.c)
+    message(PICO_BOARD="${PICO_BOARD}")
+endif()
+
+if(PICO_BOARD STREQUAL "blepisv2")
+    # new v2 peripherals get added here
+    # set(EXTRA_SOURCES )
+    message(PICO_BOARD="${PICO_BOARD}")
+endif()
+
+if(PICO_BOARD STREQUAL "beepy")
+    set(EXTRA_SOURCES gpioexp.c)
+    message(PICO_BOARD="${PICO_BOARD}")
+endif()
+
 add_executable(firmware
+    gpio.c
 	backlight.c
-	vibromotor.c
-    peripherals.c
+	#vibromotor.c
+    #peripherals.c
 	debug.c
 	fifo.c
-	gpioexp.c
+	#gpioexp.c
 	puppet_i2c.c
 	interrupt.c
 	keyboard.c
 	main.c
-	mcp23017.c
+	#mcp23017.c
 	reg.c
 	shared_i2c.c
 	touchpad.c
@@ -20,13 +38,16 @@ add_executable(firmware
 	pi.c
 	rtc.c
 	update.c
+    ${EXTRA_SOURCES}
 )
 
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 target_include_directories(firmware PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
-pico_generate_pio_header(firmware ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+if((PICO_BOARD STREQUAL "blepisv1") OR (PICO_BOARD STREQUAL "blepisv2"))
+    pico_generate_pio_header(firmware ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+endif()
 
 target_link_libraries(firmware
 	cmsis_core

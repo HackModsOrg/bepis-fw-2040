@@ -10,7 +10,9 @@
 
 #include "backlight.h"
 #include "debug.h"
-#include "gpioexp.h"
+#ifdef BEEPY
+    #include "gpioexp.h"
+#endif
 #include "interrupt.h"
 #include "keyboard.h"
 #include "puppet_i2c.h"
@@ -19,7 +21,7 @@
 #include "touchpad.h"
 #include "pi.h"
 #include "shared_i2c.h"
-#ifdef HAS_MCP23017
+#ifdef BLEPIS_V1
     #include "mcp23017.h"
 #endif
 #ifdef PIN_VIBRO_DRV
@@ -38,7 +40,9 @@ static void gpio_irq(uint gpio, uint32_t events)
 {
 //	printf("%s: gpio %d, events 0x%02X\r\n", __func__, gpio, events);
 	touchpad_gpio_irq(gpio, events);
-	gpioexp_gpio_irq(gpio, events);
+    #ifdef BEEPY
+    	gpioexp_gpio_irq(gpio, events);
+    #endif
 }
 
 // TODO: Microphone
@@ -62,7 +66,7 @@ int main(void)
 
 	rtc_init();
 
-    #ifdef HAS_MCP23017
+    #ifdef BLEPIS_V1
         #ifndef NDEBUG
 	        printf("mcp init\r\n");
         #endif
@@ -81,14 +85,18 @@ int main(void)
     #endif
 
 	backlight_init();
-	vibromotor_init();
-    peripherals_init();
-
-    #ifndef NDEBUG
-	    printf("gpioexp init\r\n");
+    #ifdef BLEPIS
+    	vibromotor_init();
+        peripherals_init();
     #endif
 
-	//gpioexp_init();
+    // gpioexp only works on OG beepy so far
+    #ifdef BEEPY
+        #ifndef NDEBUG
+	        printf("gpioexp init\r\n");
+        #endif
+    	gpioexp_init();
+    #endif
 
     #ifndef NDEBUG
 	    printf("keeb init\r\n");

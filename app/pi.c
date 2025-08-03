@@ -1,5 +1,6 @@
 #include "pi.h"
-#include "mcp23017.h"
+#include "gpioexp.h"
+#include "gpio.h"
 #include "reg.h"
 #include "keyboard.h"
 #include "gpioexp.h"
@@ -48,11 +49,13 @@ void pi_power_init(void)
 	adc_gpio_init(PIN_BAT_ADC);
 	adc_select_input(0);
 
-	// gpio_init(PIN_PI_PWR); we don't have that on mcp
-	mcp23017_gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
-	mcp23017_gpio_put(PIN_PI_PWR, 0);
-	mcp23017_gpio_set_dir(PIN_DISP_RST, GPIO_OUT);
-	mcp23017_gpio_put(PIN_DISP_RST, 1);
+	uni_gpio_init(PIN_PI_PWR);
+	uni_gpio_set_dir(PIN_PI_PWR, GPIO_OUT);
+	uni_gpio_put(PIN_PI_PWR, 0);
+    #ifdef BLEPIS
+	    uni_gpio_set_dir(PIN_DISP_RST, GPIO_OUT);
+    	uni_gpio_put(PIN_DISP_RST, 1);
+    #endif
 	g_pi_state = PI_STATE_OFF;
 }
 
@@ -64,8 +67,10 @@ void pi_power_on(enum power_on_reason reason)
 		return;
 	}
 
-	mcp23017_gpio_put(PIN_DISP_RST, 1); //display RST starts out deasserted
-	mcp23017_gpio_put(PIN_PI_PWR, 1);
+    #ifdef BLEPIS
+    	uni_gpio_put(PIN_DISP_RST, 1); //display RST starts out deasserted
+    #endif
+	uni_gpio_put(PIN_PI_PWR, 1);
 	g_pi_state = PI_STATE_ON;
 
 	// Clear any input queued while Pi was off
@@ -80,10 +85,12 @@ void pi_power_on(enum power_on_reason reason)
 
 	// Update startup reason
 	reg_set_value(REG_ID_STARTUP_REASON, reason);
-	mcp23017_gpio_put(PIN_DISP_RST, 0); // Assert display RESET
-	// Wait a little and bring the display out of RESET
-	sleep_ms(500);
-	mcp23017_gpio_put(PIN_DISP_RST, 1);
+    #ifdef BLEPIS
+    	uni_gpio_put(PIN_DISP_RST, 0); // Assert display RESET
+    	// Wait a little and bring the display out of RESET
+	    sleep_ms(500);
+    	uni_gpio_put(PIN_DISP_RST, 1);
+    #endif
 }
 
 void pi_power_off(void)
@@ -92,7 +99,7 @@ void pi_power_off(void)
 		return;
 	}
 
-	mcp23017_gpio_put(PIN_PI_PWR, 0);
+	uni_gpio_put(PIN_PI_PWR, 0);
 	g_pi_state = PI_STATE_OFF;
 }
 

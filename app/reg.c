@@ -3,10 +3,7 @@
 #include "app_config.h"
 #include "backlight.h"
 
-#include "vibromotor.h"
-#include "peripherals.h"
 #include "fifo.h"
-#include "gpioexp.h"
 #include "puppet_i2c.h"
 #include "keyboard.h"
 #include "touchpad.h"
@@ -14,6 +11,15 @@
 #include "hardware/adc.h"
 #include "rtc.h"
 #include "update.h"
+
+#ifdef BLEPIS
+#include "vibromotor.h"
+#include "peripherals.h"
+#endif
+
+#ifdef BEEPY
+#include "gpioexp.h"
+#endif
 
 #include <pico/stdlib.h>
 #include <RP2040.h> // TODO: When there's more than one RP chip, change this to be more generic
@@ -82,9 +88,11 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 				backlight_sync();
 				break;
 
+            #ifdef BLEPIS
             case REG_ID_VBR:
                 vibromotor_sync();
                 break;
+            #endif
 
 			case REG_ID_ADR:
 				puppet_i2c_sync_address();
@@ -105,27 +113,29 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 	case REG_ID_PUE: // gpio input pull enable
 	case REG_ID_PUD: // gpio input pull direction
 	{
+        #ifdef BEEPY
 		if (is_write) {
 			switch (reg) {
 			case REG_ID_DIR:
-				//gpioexp_update_dir(in_data);
+				gpioexp_update_dir(in_data);
 				break;
 			case REG_ID_PUE:
-				//gpioexp_update_pue_pud(in_data, reg_get_value(REG_ID_PUD));
+				gpioexp_update_pue_pud(in_data, reg_get_value(REG_ID_PUD));
 				break;
 			case REG_ID_PUD:
-				//gpioexp_update_pue_pud(reg_get_value(REG_ID_PUE), in_data);
+				gpioexp_update_pue_pud(reg_get_value(REG_ID_PUE), in_data);
 				break;
 			}
 		} else {
 			out_buffer[0] = reg_get_value(reg);
 			*out_len = sizeof(uint8_t);
 		}
+        #endif
 		break;
 	}
 
     // charger interface (charging power, charging enable)
-    #ifdef PIN_CHG_DIS
+    #ifdef BLEPIS
     case REG_ID_PWR: // power settings/state
     {
 		if (is_write) {
@@ -209,6 +219,7 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 
 	case REG_ID_GIO: // gpio value
 	{
+        #ifdef BEEPY
 		if (is_write) {
 			gpioexp_set_value(in_data);
 		} else {
@@ -216,6 +227,7 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 			*out_len = sizeof(uint8_t);
 		}
 		break;
+        #endif
 	}
 
 	// RGB LED registers

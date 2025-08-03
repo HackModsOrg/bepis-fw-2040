@@ -17,6 +17,8 @@
 #define PIN_PUPPET_SDA		28
 #define PIN_PUPPET_SCL		29
 
+#define BEEPY
+
 /** beeper specific pins **/
 #define PIN_PI_PWR 15
 #define PIN_PI_SHUTDOWN 21
