@@ -9,9 +9,9 @@ include(3rdparty/pico-extras/pico_sdk_import.cmake)
 include(3rdparty/pico-extras/external/pico_extras_import.cmake)
 
 if(PICO_BOARD STREQUAL "blepisv1")
-    set(PROJECT blepisv1)
+    set(PROJECT blepis_v1)
 elseif (PICO_BOARD STREQUAL "blepisv2")
-    set(PROJECT blepisv2)
+    set(PROJECT blepis_v2)
 elseif (PICO_BOARD STREQUAL "beepy")
     set(PROJECT beepy)
 else()
@@ -26,8 +26,8 @@ pico_sdk_init()
 set(FLASHLOADER_DIR ${CMAKE_CURRENT_LIST_DIR}/3rdparty/pico-flashloader)
 
 # Need at least SDK v1.3.0 (due to https://github.com/raspberrypi/pico-sdk/issues/573)
-if(${PICO_SDK_VERSION_STRING} VERSION_LESS "2.0.0")
-    message(FATAL_ERROR "Pico SDK v2.0.0 or greater is required.  You have ${PICO_SDK_VERSION_STRING}")
+if(${PICO_SDK_VERSION_STRING} VERSION_LESS "2.1.1")
+    message(FATAL_ERROR "Pico SDK v2.1.1 or greater is required.  You have ${PICO_SDK_VERSION_STRING}")
 endif()
 
 ################################################################################
