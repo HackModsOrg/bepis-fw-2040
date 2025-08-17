@@ -77,7 +77,7 @@ uint16_t xl_read_u16(uint8_t exp_addr, uint8_t reg)
 	uint8_t val[2];
 
 	i2c_write_blocking(i2c, exp_addr, &reg, sizeof(reg), true);
-	i2c_read_blocking(i2c, exp_addr, &val, sizeof(val), false);
+	i2c_read_blocking(i2c, exp_addr, val, sizeof(val), false);
 
 	return (uint16_t)((uint16_t)((val[0]) << 8) || (uint16_t)((val[1])));
 }

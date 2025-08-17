@@ -63,7 +63,7 @@ uint16_t mcp_read_u16(uint8_t reg)
 	uint8_t val[2];
 
 	i2c_write_blocking(i2c, MCP_ADDR, &reg, sizeof(reg), true);
-	i2c_read_blocking(i2c, MCP_ADDR, &val, sizeof(val), false);
+	i2c_read_blocking(i2c, MCP_ADDR, val, sizeof(val), false);
 
 	return (uint16_t)((uint16_t)((val[0]) << 8) || (uint16_t)((val[1])));
 }
