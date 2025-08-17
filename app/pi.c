@@ -18,6 +18,7 @@
 
 #include "hardware/clocks.h"
 #include "hardware/rosc.h"
+#include "hardware/rtc.h"
 #include "hardware/structs/scb.h"
 
 #include <pico/stdlib.h>
