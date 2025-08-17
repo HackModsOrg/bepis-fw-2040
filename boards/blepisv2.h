@@ -5,15 +5,15 @@
 #define USB_PID				0xB182
 #define USB_PRODUCT			"BBQ20KBD"
 
-#define PIN_INT				0
+#define PIN_INT				15
 #define PIN_BKL				25
 
 #define PIN_SDA				18
 #define PIN_SCL				23
 
-#define PIN_TP_RESET		32
+#define PIN_TP_RESET		31
 #define PIN_TP_MOTION		22
-#define PIN_TP_SHUTDOWN		33
+#define PIN_TP_SHUTDOWN		30
 
 #define PIN_PUPPET_SDA		28
 #define PIN_PUPPET_SCL		29
@@ -21,79 +21,87 @@
 #define BLEPIS
 #define BLEPIS_V2
 
-#define XL9535_TOP_ADDR 0x24
-#define XL9535_BOTTOM_ADDR 0x26
+#define XL9535_TOP_ADDR 0x24 // U27, addr range from 30 to 45 (inclusive)
+#define XL9535_BOTTOM_ADDR 0x26 // U25, addr range from 46 to 61 (inclusive)
+#define FUSB302_ADDR 0x22
+// 4 TMP102 sensors onboard, 0x49/0x4a/0x4b/0x4c
+#define TEMP_BASE_ADDR 0x49
 
-/** beeper specific pins **/
-#define PIN_PI_PWR 36
-#define PIN_PI_SHUTDOWN 41
-/** Bepis use NEOPIXEL
+
+/** Beepy inherited pins **/
+#define PIN_PI_PWR 35
+#define PIN_PI_SHUTDOWN 40
+/** Blepis uses NEOPIXEL
 #define PIN_LED_R 20
 #define PIN_LED_G 19
 #define PIN_LED_B 17
 **/
+#define PIN_NEO_PIXEL 20
+
 #define PIN_BAT_ADC 26
 
-/** Bepis specific pins and config **/
+/** Blepis specific pins and config **/
 
-#define PIN_USB_MUX_SEL 58 // 0x51 //
-#define PIN_FUSB_MUX_SEL 60 // 0x51 //
-#define PIN_BUZZER 15
-#define PIN_XL9535_INT  16 // EX_INT in schematic
-#define PIN_NEO_PIXEL 20 // internal
+// muxes
+#define PIN_USB_MUX_SEL 57 // 0x51 //
+#define PIN_FUSB_MUX_SEL 59 // 0x51 //
+
+// peripherals
+#define PIN_BUZZER 14
 #define PIN_VIBRO_DRV 21 // 0x50 //
 #define PIN_LCDBL_DRV 24 // BKL //
-#define PIN_DISP_EXTIN 40 // 0x53 //
-#define PIN_DISP_RST 42  // 0x53 //
-#define PIN_CHG_DIS 49 // 0x52 //
-#define PIN_CHG_PWR 47 // 0x52 //
-#define PIN_5V_PGOOD 57 // 0x52 //
+#define PIN_DISP_EXTIN 39 // 0x53 //
+#define PIN_DISP_RST 41  // 0x53 //
+#define PIN_CHG_DIS 48 // 0x52 //
+#define PIN_CHG_PWR 46 // 0x52 //
+#define PIN_5V_PGOOD 55 // 0x52 //
 
-/** belpisv2 specific pins and config **/
-#define PIN_I2C_PU_PWR 33
-#define PIN_BUTTON_4 37
-#define PIN_BUTTON_5 38
-#define PIN_UART_MUX_SEL 39
-#define PIN_BUTTON_3 46
-#define PIN_BUTTON_2 45
-#define PIN_BUTTON_1 44
-#define PIN_RTC_INT 43
-#define PIN_VBUS_DET 48
-#define PIN_PROG_DET 50
-#define PIN_CHG_DET 51
-#define PIN_USB_MUX_EN 52
-#define PIN_TAL 53
-#define PIN_USBC_OUT_EN 54
-#define PIN_USBC_IN_EN 55
-#define PIN_5V_BOOST_EN 57
-#define PIN_FUSB_INT 59
-#define PIN_CLED_EN 61
-#define PIN_USBC_OUT_PWR_EN 62
+#define PIN_XL9535_TOP_INT  16 // EX-T_INT in schematic
+#define PIN_XL9535_BOTTOM_INT  19 // EX-B_INT in schematic
 
-// TODO change up pins
+/** Blepis v2 specific pins and config **/
+#define PIN_UART_MUX_SEL 38
+#define PIN_I2C_PU_PWR 32
+#define PIN_BUTTON_4 36
+#define PIN_BUTTON_5 37
+#define PIN_BUTTON_3 45
+#define PIN_BUTTON_2 44
+#define PIN_BUTTON_1 43
+#define PIN_RTC_INT 42
+#define PIN_VBUS_DET 47
+#define PIN_PROG_DET 49
+#define PIN_CHG_DET 50
+#define PIN_USB_MUX_EN 51
+#define PIN_TAL 52
+#define PIN_USBC_OUT_EN 53
+#define PIN_USBC_IN_EN 54
+#define PIN_5V_BOOST_EN 56
+#define PIN_FUSB_INT 58
+#define PIN_CLED_EN 60
+#define PIN_USBC_OUT_PWR_EN 61
 
 #define NUM_OF_ROWS			7
 #define PINS_ROWS \
-	14, \
 	13, \
 	12, \
 	11, \
 	10, \
 	9, \
-	8
+	8, \
+	7
 
 #define NUM_OF_COLS			6
 #define PINS_COLS \
+	0,  \
 	1,  \
-	2,  \
-	3, \
-	7, \
+	2, \
 	6, \
-	5
+	5, \
+	4
 
 #define NUM_OF_BTNS			1
 #define PINS_BTNS \
-	4,
+	3, // COL7
 #define BTN_KEYS \
 	{ KEY_POWER },
 

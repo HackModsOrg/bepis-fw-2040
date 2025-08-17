@@ -22,6 +22,7 @@
 
 #include <pico/stdlib.h>
 #include <pico/sleep.h>
+#include <pico/runtime_init.h>
 #ifndef NDEBUG
     #include <stdio.h>
 #endif
