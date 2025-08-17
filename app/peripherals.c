@@ -12,14 +12,18 @@ static int64_t extcomin_alarm_callback(alarm_id_t _, void* __);
 
 void peripherals_init(void)
 {
+    #ifdef BLEPIS
     // charging pins
-    #ifdef PIN_CHG_DIS
 	uni_gpio_set_dir(PIN_CHG_DIS, GPIO_OUT);
 	uni_gpio_put(PIN_CHG_DIS, 0);
 	uni_gpio_set_dir(PIN_CHG_PWR, GPIO_OUT);
 	uni_gpio_put(PIN_CHG_PWR, 0);
-	uni_gpio_set_dir(PIN_USB_MUX_SEL, GPIO_OUT);
+    #ifdef BLEPIS_V2
+	uni_gpio_put(PIN_USB_MUX_SEL, 1);
+    #else
 	uni_gpio_put(PIN_USB_MUX_SEL, 0);
+    #endif
+	uni_gpio_set_dir(PIN_USB_MUX_SEL, GPIO_OUT);
 	uni_gpio_put(PIN_FUSB_MUX_SEL, 1); // setting SEL to output before boot means the I2C bus can fuckin crash cuz of I2CZ-I2CR short-circuit while I2CZ is non-powered
 	uni_gpio_set_dir(PIN_FUSB_MUX_SEL, GPIO_OUT);
     #endif
