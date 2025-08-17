@@ -24,6 +24,9 @@
 #ifdef BLEPIS_V1
     #include "mcp23017.h"
 #endif
+#ifdef BLEPIS_V2
+    #include "xl9535.h"
+#endif
 #ifdef PIN_VIBRO_DRV
     #include "vibromotor.h"
 #endif
@@ -72,6 +75,14 @@ int main(void)
         #endif
 
 	mcp23017_init();
+    #endif
+
+    #ifdef BLEPIS_V2
+        #ifndef NDEBUG
+	        printf("xl9535 init\r\n");
+        #endif
+
+	xl9535_init();
     #endif
 
     #ifndef NDEBUG

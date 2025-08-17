@@ -1,6 +1,6 @@
 set(CMAKE_C_STANDARD 11)
 
-if((PICO_BOARD STREQUAL "blepisv1") OR (PICO_BOARD STREQUAL "blepisv2"))
+if((PICO_BOARD STREQUAL "blepisv1"))
     # idk how to do "startswith" lol
     set(EXTRA_SOURCES vibromotor.c peripherals.c mcp23017.c)
     message(PICO_BOARD="${PICO_BOARD}")
@@ -8,7 +8,7 @@ endif()
 
 if(PICO_BOARD STREQUAL "blepisv2")
     # new v2 peripherals get added here
-    # set(EXTRA_SOURCES )
+    set(EXTRA_SOURCES ${EXTRA_SOURCES} vibromotor.c peripherals.c xl9535.c)
     message(PICO_BOARD="${PICO_BOARD}")
 endif()
 

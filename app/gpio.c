@@ -12,6 +12,9 @@
 #ifdef BLEPIS_V1
     #include "mcp23017.h"
 #endif
+#ifdef BLEPIS_V2
+    #include "xl9535.h"
+#endif
 
 void uni_gpio_init(uint8_t gpio) {
     if (gpio <= 30) {
@@ -45,8 +48,7 @@ void uni_gpio_set_dir(uint8_t gpio, bool out) {
     #endif
     #ifdef BLEPIS_V2
     if (gpio > 30) {
-        // TODO XL9535 support
-        //xl9535_gpio_set_dir(gpio, out);
+        xl9535_gpio_set_dir(gpio, out);
         return;
     }
     #endif
@@ -85,8 +87,7 @@ void uni_gpio_put(uint8_t gpio, bool value) {
     #endif
     #ifdef BLEPIS_V2
     if (gpio > 30) {
-        // TODO XL9535 support
-        //xl9535_gpio_put(gpio, value);
+        xl9535_gpio_put(gpio, value);
         return;
     }
     #endif
@@ -105,8 +106,7 @@ bool uni_gpio_get(uint8_t gpio) {
     #endif
     #ifdef BLEPIS_V2
     if (gpio > 30) {
-        // TODO XL9535 support
-        //return xl9535_gpio_put(gpio, value);
+        return xl9535_gpio_get(gpio);
     }
     #endif
     return 0;

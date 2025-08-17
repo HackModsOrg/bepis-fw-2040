@@ -30,6 +30,9 @@ jobs:
 
             - name: Build
               run: |
+                    gcc --version
+                    cmake --version
+                    arm-none-eabi-gcc --version
                     mkdir -p build output
                     cd build
                     cmake -DPICO_BOARD=beepy -DCMAKE_BUILD_TYPE=Debug ..
