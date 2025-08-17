@@ -52,8 +52,17 @@ static void gpio_irq(uint gpio, uint32_t events)
 int main(void)
 {
 	// This order is important because it determines callback call order
+    // there's stil things to reshuffle, but do take care
 
     usb_init();
+
+    #ifndef NDEBUG
+    	printf("led init\r\n");
+    #endif
+
+	led_init();
+
+    dbg_light(urgb_u32(0xf*3, 0, 0));
 
     #ifndef NDEBUG
 	    debug_init();
@@ -61,6 +70,7 @@ int main(void)
 
 	sleep_ms(3000);
 
+    dbg_light(urgb_u32(0xf*3, 0xf*3, 0));
 	setup_shared_i2c();
 
     #ifndef NDEBUG
@@ -74,7 +84,7 @@ int main(void)
 	        printf("mcp init\r\n");
         #endif
 
-	mcp23017_init();
+    	mcp23017_init();
     #endif
 
     #ifdef BLEPIS_V2
@@ -82,8 +92,11 @@ int main(void)
 	        printf("xl9535 init\r\n");
         #endif
 
-	xl9535_init();
+	    xl9535_init();
     #endif
+
+    dbg_light(urgb_u32(0, 0xf*3, 0));
+    //dbg_light(urgb_u32(0xf*5, 0xb*5, 0xc*5));
 
     #ifndef NDEBUG
 	    printf("reg init\r\n");
@@ -101,6 +114,8 @@ int main(void)
         peripherals_init();
     #endif
 
+    dbg_light(urgb_u32(0, 0xf*3, 0xf*3));
+
     // gpioexp only works on OG beepy so far
     #ifdef BEEPY
         #ifndef NDEBUG
@@ -114,6 +129,11 @@ int main(void)
     #endif
 
 	keyboard_init();
+
+	// For now, the `gpio` param is ignored and all enabled GPIOs generate the irq
+	gpio_set_irq_enabled_with_callback(0xFF, 0, true, &gpio_irq);
+
+    dbg_light(urgb_u32(0xf*3, 0, 0xf*3));
 
     #ifndef NDEBUG
 	    printf("touch init\r\n");
@@ -134,21 +154,14 @@ int main(void)
 	puppet_i2c_init();
 
     #ifndef NDEBUG
-    	printf("led init\r\n");
-    #endif
-
-	led_init();
-
-	// For now, the `gpio` param is ignored and all enabled GPIOs generate the irq
-	gpio_set_irq_enabled_with_callback(0xFF, 0, true, &gpio_irq);
-
-    #ifndef NDEBUG
 	    printf("pipwr init\r\n");
     #endif
 
 	pi_power_init();
 
 	pi_power_on(POWER_ON_FW_INIT);
+
+    dbg_light(urgb_u32(0, 0, 0xf*3));
 
     #ifndef NDEBUG
 	    printf("Starting main loop\r\n");
