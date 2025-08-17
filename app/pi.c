@@ -224,18 +224,22 @@ void pi_cancel_power_alarms()
 	}
 }
 
-static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
+//static inline
+uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
   return ((uint32_t)(r) << 8) |
          ((uint32_t)(g) << 16) |
          (uint32_t)(b);
 }
 
-static inline uint32_t urgbw_u32(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
+//static inline
+/*
+uint32_t urgbw_u32(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
     return  ((uint32_t) (r) << 8) |
             ((uint32_t) (g) << 16) |
             ((uint32_t) (w) << 24) |
             (uint32_t) (b);
 }
+*/
 
 uint32_t pixel_grb = 0;
 uint32_t dbg_pixel_grb = 0;
@@ -251,7 +255,8 @@ static inline void put_pixel() {
 
 #endif
 
-static inline void dbg_light(uint32_t dbg_light_grb) {
+//static inline 
+void dbg_light(uint32_t dbg_light_grb) {
   #ifdef BLEPIS_V2
     dbg_pixel_grb = dbg_light_grb;
     put_pixel();
@@ -265,7 +270,7 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
         #ifndef NDEBUG
             printf("led: 0x%02X/0x%02X/0x%02X\r\n", 0, 0, 0);
         #endif
-        pixel_grb = urgbw_u32(0x00,0x00,0x00,0x00);
+        pixel_grb = urgb_u32(0x00,0x00,0x00); //,0x00);
 		put_pixel();
 		return;
 	}
@@ -273,7 +278,7 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
         printf("led: 0x%02X/0x%02X/0x%02X\r\n", r, g, b);
     #endif
 
-    pixel_grb = urgbw_u32(r,g,b,255);
+    pixel_grb = urgb_u32(r,g,b); //,255);
 	put_pixel();
 	#endif
 	#ifndef PIN_NEO_PIXEL
@@ -319,14 +324,14 @@ void led_init(void)
   	int sm = 0;
  	uint offset = pio_add_program(pio, &ws2812_program);
 
-	ws2812_program_init(pio, sm, offset, PIN_NEO_PIXEL, 800000, true);
+	ws2812_program_init(pio, sm, offset, PIN_NEO_PIXEL, 800000, false);
 	#endif
 
 }
 
 void led_test(void) {
   #ifdef PIN_NEO_PIXEL
-    pixel_grb = urgbw_u32(255,255,255,255);
+    pixel_grb = urgb_u32(255,255,255);
     put_pixel();
   #endif
 }
