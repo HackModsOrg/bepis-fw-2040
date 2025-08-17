@@ -237,11 +237,26 @@ static inline uint32_t urgbw_u32(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
             (uint32_t) (b);
 }
 
+uint32_t pixel_grb = 0;
+uint32_t dbg_pixel_grb = 0;
+
 #ifdef PIN_NEO_PIXEL
-static inline void put_pixel(uint32_t pixel_grb) {
-  pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
-}
+static inline void put_pixel() {
+    #ifdef BLEPIS_V2
+      // two neopixels, first one is debug pixel and needs to keep getting updated
+      pio_sm_put_blocking(pio0, 0, dbg_pixel_grb << 8u);
+    #endif
+    pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
+  }
+
 #endif
+
+static inline void dbg_light(uint32_t dbg_light_grb) {
+  #ifdef BLEPIS_V2
+    dbg_pixel_grb = dbg_light_grb;
+    put_pixel();
+  #endif
+}
 
 static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -250,14 +265,16 @@ static void led_sync(bool enable, uint8_t r, uint8_t g, uint8_t b)
         #ifndef NDEBUG
             printf("led: 0x%02X/0x%02X/0x%02X\r\n", 0, 0, 0);
         #endif
-		put_pixel(urgbw_u32(0x00,0x00,0x00,0x00));
+        pixel_grb = urgbw_u32(0x00,0x00,0x00,0x00);
+		put_pixel();
 		return;
 	}
     #ifndef NDEBUG
         printf("led: 0x%02X/0x%02X/0x%02X\r\n", r, g, b);
     #endif
 
-	put_pixel(urgbw_u32(r,g,b,255));
+    pixel_grb = urgbw_u32(r,g,b,255);
+	put_pixel();
 	#endif
 	#ifndef PIN_NEO_PIXEL
 	if (!enable) {
@@ -308,9 +325,10 @@ void led_init(void)
 }
 
 void led_test(void) {
-	#ifdef PIN_NEO_PIXEL
-	put_pixel(urgbw_u32(255,255,255,255));
-    #endif
+  #ifdef PIN_NEO_PIXEL
+    pixel_grb = urgbw_u32(255,255,255,255);
+    put_pixel();
+  #endif
 }
 
 static int64_t pi_led_flash_alarm_callback(alarm_id_t _, void* __)
