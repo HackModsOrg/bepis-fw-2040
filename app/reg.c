@@ -173,16 +173,16 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
 			reg_set_value(reg, in_data);
             if (reg_is_bit_set(REG_ID_MUX, MUX_USB) != muxusb_set) {
                 if (reg_is_bit_set(REG_ID_MUX, MUX_USB)) {
-                    usbmux_high();
+                    usbmux_host();
                 } else {
-                    usbmux_low();
+                    usbmux_rp2040();
                 }
             }
             if (reg_is_bit_set(REG_ID_MUX, MUX_FUSB) != muxfusb_set) {
                 if (reg_is_bit_set(REG_ID_MUX, MUX_FUSB)) {
-                    fusbmux_high();
+                    fusbmux_zero();
                 } else {
-                    fusbmux_low();
+                    fusbmux_rp2040();
                 }
             }
 		} else {

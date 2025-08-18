@@ -1,5 +1,10 @@
+/*
+Blepis-only file
+*/
+
 #include "reg.h"
 #include "gpio.h"
+#include "peripherals.h"
 
 #include <stdio.h>
 #include <hardware/pwm.h>
@@ -12,21 +17,22 @@ static int64_t extcomin_alarm_callback(alarm_id_t _, void* __);
 
 void peripherals_init(void)
 {
-    #ifdef BLEPIS
     // charging pins
 	uni_gpio_set_dir(PIN_CHG_DIS, GPIO_OUT);
-	uni_gpio_put(PIN_CHG_DIS, 0);
+    charger_enable();
 	uni_gpio_set_dir(PIN_CHG_PWR, GPIO_OUT);
-	uni_gpio_put(PIN_CHG_PWR, 0);
+    charger_lopwr();
     #ifdef BLEPIS_V2
-	uni_gpio_put(PIN_USB_MUX_SEL, 1);
-    #else
-	uni_gpio_put(PIN_USB_MUX_SEL, 0);
     #endif
+    // usb and fusb muxes
+    usbmux_rp2040();
 	uni_gpio_set_dir(PIN_USB_MUX_SEL, GPIO_OUT);
-	uni_gpio_put(PIN_FUSB_MUX_SEL, 1); // setting SEL to output before boot means the I2C bus can fuckin crash cuz of I2CZ-I2CR short-circuit while I2CZ is non-powered
+    // setting FUSB mux SEL to out before setting it high means FUSB would momentarily disappear from the bus.
+    // however, on stock blepis v1, this means Zero and 2040 I2C buses getting short-circuit, which, is pretty bad and undesirable
+    // which is why here I set value first and then init.
+    fusbmux_rp2040();
 	uni_gpio_set_dir(PIN_FUSB_MUX_SEL, GPIO_OUT);
-    #endif
+    // extin
     uni_gpio_set_dir(PIN_DISP_EXTIN, GPIO_OUT);
     //uni_gpio_put(PIN_DISP_EXTIN, 0);
     g_extcomin_alarm = 1;
@@ -60,25 +66,33 @@ void charger_hipwr()
 }
 
 
-void usbmux_high()
+void usbmux_host()
 {
-    //printf("usmbux en\r\n");
-	uni_gpio_put(PIN_USB_MUX_SEL, 1);
-}
-
-void usbmux_low()
-{
-    //printf("usmbux dis\r\n");
+    //printf("usmbux host\r\n");
+    #ifdef BLEPIS_V2
 	uni_gpio_put(PIN_USB_MUX_SEL, 0);
+    #else
+	uni_gpio_put(PIN_USB_MUX_SEL, 1);
+    #endif
 }
 
-void fusbmux_high()
+void usbmux_rp2040()
+{
+    //printf("usmbux rp2040\r\n");
+    #ifdef BLEPIS_V2
+	uni_gpio_put(PIN_USB_MUX_SEL, 1);
+    #else
+	uni_gpio_put(PIN_USB_MUX_SEL, 0);
+    #endif
+}
+
+void fusbmux_rp2040()
 {
     //printf("fusmbux en\r\n");
 	uni_gpio_put(PIN_FUSB_MUX_SEL, 1);
 }
 
-void fusbmux_low()
+void fusbmux_zero()
 {
     //printf("fusmbux dis\r\n");
 	uni_gpio_put(PIN_FUSB_MUX_SEL, 0);
