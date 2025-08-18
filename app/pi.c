@@ -11,7 +11,8 @@
 #include "gpioexp.h"
 #endif
 
-#ifdef PIN_NEO_PIXEL
+#ifdef BLEPIS
+#include "peripherals.h"
 #include "ws2812.pio.h"
 #include "hardware/pio.h"
 #endif
@@ -91,7 +92,11 @@ void pi_power_on(enum power_on_reason reason)
 
 	// Update startup reason
 	reg_set_value(REG_ID_STARTUP_REASON, reason);
+    // Blepis-specific stuff - 5V boost control if appropriate, and display reset toggle
     #ifdef BLEPIS
+        #ifdef BLEPIS_V2
+            boost_enable(); // enabling boost a little bit before powering up the Pi
+        #endif
     	uni_gpio_put(PIN_DISP_RST, 0); // Assert display RESET
     	// Wait a little and bring the display out of RESET
 	    sleep_ms(500);
