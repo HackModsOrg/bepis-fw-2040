@@ -46,9 +46,9 @@ static bool kbd_pressed[NUM_OF_ROWS][NUM_OF_COLS] = {};
 
 #if NUM_OF_BTNS > 0
 
-// Call end key mapped to GPIO 4
+// Call end key mapped to GPIO 4 (or 3 on Blepis v2)
 static const char btn_entries[NUM_OF_BTNS] = { KEY_POWER };
-static const uint8_t btn_pins[NUM_OF_BTNS] = { 4 };
+static const uint8_t btn_pins[NUM_OF_BTNS] = { PINS_BTNS };
 #endif
 
 #pragma GCC diagnostic pop
