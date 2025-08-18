@@ -108,6 +108,7 @@ enum reg_id
 
 #define MUX_USB              (1 << 0)
 #define MUX_FUSB             (1 << 1)
+#define MUX_UART             (1 << 2)
 
 #define PWR_CHGDIS          (1 << 0)
 #define PWR_CHGPWR          (1 << 1)

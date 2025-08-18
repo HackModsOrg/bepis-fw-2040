@@ -185,6 +185,16 @@ void reg_process_packet(uint8_t in_reg, uint8_t in_data, uint8_t *out_buffer, ui
                     fusbmux_rp2040();
                 }
             }
+            #ifdef BLEPIS_V2
+            bool muxuart_set = reg_is_bit_set(REG_ID_MUX, MUX_UART);
+            if (reg_is_bit_set(REG_ID_MUX, MUX_UART) != muxuart_set) {
+                if (reg_is_bit_set(REG_ID_MUX, MUX_UART)) {
+                    uartmux_intl();
+                } else {
+                    uartmux_exp();
+                }
+            }
+            #endif
 		} else {
 			out_buffer[0] = reg_get_value(reg);
 			*out_len = sizeof(uint8_t);

@@ -23,6 +23,12 @@ void peripherals_init(void)
 	uni_gpio_set_dir(PIN_CHG_PWR, GPIO_OUT);
     charger_lopwr();
     #ifdef BLEPIS_V2
+    // 5v boost
+	uni_gpio_set_dir(PIN_5V_BOOST_EN, GPIO_OUT);
+    boost_disable();
+    // uart mux
+	uni_gpio_set_dir(PIN_UART_MUX_SEL, GPIO_OUT);
+    uartmux_exp();
     #endif
     // usb and fusb muxes
     usbmux_rp2040();
@@ -39,7 +45,21 @@ void peripherals_init(void)
     (void)extcomin_alarm_callback(0, NULL);
 }
 
-#ifdef PIN_CHG_DIS
+#ifdef BLEPIS_V2
+void boost_enable()
+{
+    //printf("boost en\r\n");
+	uni_gpio_put(PIN_5V_BOOST_EN, 1);
+}
+
+void boost_disable()
+{
+    //printf("boost dis\r\n");
+	uni_gpio_put(PIN_5V_BOOST_EN, 0);
+}
+
+#endif
+
 void charger_enable()
 {
     //printf("chg en\r\n");
@@ -96,6 +116,22 @@ void fusbmux_zero()
 {
     //printf("fusmbux dis\r\n");
 	uni_gpio_put(PIN_FUSB_MUX_SEL, 0);
+}
+
+#ifdef BLEPIS_V2
+
+// switches uart to external pin header, default
+void uartmux_exp()
+{
+    //printf("uartmux exp\r\n");
+	uni_gpio_put(PIN_UART_MUX_SEL, 1);
+}
+
+// switches uart to internal two pads
+void uartmux_intl()
+{
+    //printf("uartmux intl\r\n");
+	uni_gpio_put(PIN_UART_MUX_SEL, 0);
 }
 
 #endif
