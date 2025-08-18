@@ -1,10 +1,11 @@
-WIP for Bepis
 ---
-title: Beepy Firmware
+title: Blepis/Beepy Firmware
 layout: default
 ---
 
-# Beepy Firmware
+## README rewrite is in progress
+
+# Blepis/Beepy Firmware
 
 - [User Guide](#user-guide)
   - [Flashing firmware directly](#flashing-firmware-directly)
@@ -16,29 +17,31 @@ layout: default
   - [Power draw readings](#power-draw-readings)
   - [Register reference](#register-reference)
 
+This is a repository for RP2040 code running on Blepis. Head to Actions to pick up a fresh build (built for Blepis V1, V2, and OG Beepy).
+
 ## User Guide
 
-In the Beepy device, separate from the Raspberry Pi running Linux, there is an RP2040 microcontroller chip. This chip controls basic hardware input and output functions, including keyboard and touchpad input. The firmware discussed here runs directly on the RP2040. It cooperates with the Beepy keyboard driver [beepy-kbd](beepy-kbd.html) to provide key input and other functionality to Linux running on the Raspberry Pi.
+In the Blepis/Beepy device, separate from the Raspberry Pi running Linux, there is an RP2040 microcontroller chip. This chip controls basic hardware input and output functions, including keyboard and touchpad input. The firmware discussed here runs directly on the RP2040. It cooperates with the Beepy keyboard driver [beepy-kbd](beepy-kbd.html) to provide key input and other functionality to Linux running on the Raspberry Pi.
 
 See keyboard driver reference [beepy-kbd](beepy-kbd.html) for more information on keymaps.
 
 ### Flashing firmware directly
 
-If you're setting up a new Beepy device, it's recommended to flash the firmware directly from the latest firmware release.
+If you're setting up a new Blepis/Beepy device, it's recommended to flash the firmware directly from the latest firmware release.
 
-1. [Download the latest firmware image](https://github.com/ardangelo/beepberry-rp2040/releases/latest/download/i2c_puppet.uf2)
+1. Download the latest firmware image from the Actions tab
 
 2. Turn the power switch off. With the device facing up, slide the power switch in the bottom-left hand corner to the left.
 
 ![Diagram showing direction of power switch](assets/beepy-switch-off.png)
 
-3. Connect the Beepy to your computer via USB-C.
+3. Connect your board to your computer via USB-C.
 
-4. Locate the "End Call" key. It is the rightmost key on the top row of four function keys. 
+4. Locate the "End Call" key. It is the rightmost key on the keyboard on the top row of four function keys. 
 
-5. While holding the "End Call" key, slide the power switch back on to enter firmware flash mode. In firmware flash mode, the LED will light up, and the Beepy will present itself as a USB mass storage device on your computer.
+5. While holding the "End Call" key, slide the power switch back on to enter firmware flash mode. In firmware flash mode, the LED will light up, and your device will present itself as a USB mass storage device on your computer.
 
-7. Copy the firmware image onto the presented drive just like a normal file. When copying is complete, Beepy will automatically flash and reboot with the new firmware.
+7. Copy the firmware image onto the presented drive just like a normal file. When copying is complete, your Blepis or Beepy will automatically flash and reboot with the new firmware.
 
 If you're setting up a new device, you can proceed with the rest of the steps in the [quick start guide](../quick-start.html).
 
@@ -100,7 +103,9 @@ https://github.com/solderparty/i2c_puppet/blob/main/README.md
 
 ### Building from source
 
-The code depends on the Raspberry Pi Pico SDK, which is added as a submodule. You can either perform a recursive submodule init, or rather follow these steps in the root of the repository:
+    git clone --recursive https://github.com/HackModsOrg/bepis-fw-2040
+
+The code depends on the Raspberry Pi Pico SDK and a few other repositories that are added as submodules. You can perform a recursive submodule init while cloning, or, if you forgot to do that, you can follow these steps in the root of the repository:
 
     cd 3rdparty/pico-sdk
     git submodule update --init
@@ -111,12 +116,12 @@ The code depends on the Raspberry Pi Pico SDK, which is added as a submodule. Yo
 
 Run `cmake` to build the firmware:
 
-    mkdir build
+    mkdir -p build
     cd build
     cmake -DPICO_BOARD=beepy ..
     make
 
-In the `build` directory, you will find the files `i2c_puppet.uf2` and `app/firmware.hex`. The primary firmware file is `i2c_puppet.uf2`, that can be [flashed directly over USB](#flashing-firmware-directly). `app/firmware.hex` is an Intel HEX encoded firmware file that can be applied on-device after converting line format to Unix and prepending a firmware header:
+In the `build` directory, you will find the files `beepy.uf2`/`blepis_v1.uf2`/`blepis_v2.uf2` and `app/firmware.hex`. The primary firmware file is th UF2 file, that can be [flashed directly over USB](#flashing-firmware-directly). `app/firmware.hex` is an Intel HEX encoded firmware file that can be applied on-device after converting line format to Unix and prepending a firmware header:
 
     cp app/firmware.hex beepy.hex
     dos2unix beepy.hex
@@ -612,3 +617,52 @@ Touchpad LED power setting. "High" is recommended for reliable input.
 * `0x5` power low
 
 Default: `0x3` power high
+
+### Blepis-specific registers
+
+#### `0x50` `REG_ID_VBR`
+
+Read-write, 1 byte.
+
+Vibromotor power setting.
+
+* `0x00` vibromotor off
+* `0x7f` PWM medium
+* `0xff` PWM high
+
+Default: `0x0` off.
+
+#### `0x51` `REG_ID_MUX`
+
+Read-write, 1 byte.
+
+Mux settings. Controls USB mux, FUSB302 mux, and the Pi Zero UART mux on Blepis v2.
+
+* `7` Unused
+* `6` Unused
+* `5` Unused
+* `4` Unused
+* `3` Unused
+* `2` `MUX_UART` When 0, Pi Zero UART is muxed to expansion header. When 1, Pi Zero UART is muxed to the internal pads for UART mods.
+* `1` `MUX_FUSB` When 0, FUSB302 is muxed to the RP2040 I2C bus. When 1, FUSB302 is muxed to the Pi Zero I2C bus.
+* `0` `MUX_USB` When 0, bottom USB port is connected to the RP2040 USB port. When 1, bottom USB port is connected to one of the USB hub ports of the Pi Zero, allowing host mode.
+
+Default value: `0` (all default cleared)
+
+#### `0x52` `REG_ID_PWR`
+
+Read-write, 1 byte.
+
+Power settings. Controls LiIon charger enable and charging current.
+
+* `7` Unused
+* `6` Unused
+* `5` Unused
+* `4` Unused
+* `3` Unused
+* `2` Unused
+* `1` `PWR_CHGPWR` When 0, LiIon charge current is normal (~500mA on Blepis v1, 750mA on Blepis v2). When 1, LiIon charge current is high (about 1A on Blepis v1, about 1.5A on Blepis v2).
+* `0` `PWR_CHGDIS` When 0, LiIon charger is enabled. When 1, LiIon charger is disabled.
+
+Default value: `0` (all default cleared)
+
