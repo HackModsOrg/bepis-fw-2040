@@ -50,6 +50,14 @@ static struct
 	i2c_inst_t *i2c;
 } self;
 
+bool touchpad_detect()
+{
+    int ret;
+    uint8_t rxdata;
+    ret = i2c_read_blocking(self.i2c, DEV_ADDR, &rxdata, 1, false);
+    return ret >= 0;
+}
+
 uint8_t touchpad_read_i2c_u8(uint8_t reg)
 {
 	uint8_t val;
@@ -136,7 +144,7 @@ void touchpad_add_touch_callback(struct touch_callback *callback)
 }
 
 
-void touchpad_init()
+bool touchpad_init()
 {
 	uint8_t val;
 
@@ -158,6 +166,11 @@ void touchpad_init()
 	sleep_ms(100);
 	uni_gpio_put(PIN_TP_RESET, 1);
 
+	sleep_ms(100); // vibes: letting the touchpad spend a lil time out of reset
+
+    if (!touchpad_detect())
+        return false;
+
 	// Invert X motion
 	val = touchpad_read_i2c_u8(REG_ORIENTATION);
 	val |= BIT_ORIENTATION_X_INV;
@@ -165,6 +178,7 @@ void touchpad_init()
 
 	// Set power to high
 	touchpad_set_led_power(LED_HIGH);
+    return true;
 }
 
 void touchpad_set_led_power(uint8_t setting)

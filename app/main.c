@@ -68,7 +68,7 @@ int main(void)
 	    debug_init();
     #endif
 
-	sleep_ms(3000);
+	sleep_ms(2000);
 
     dbg_light(urgb_u32(0xf*3, 0xf*3, 0));
 	setup_shared_i2c();
@@ -139,7 +139,14 @@ int main(void)
 	    printf("touch init\r\n");
     #endif
 
-	touchpad_init();
+	bool touch_found = touchpad_init();
+    if (!touch_found) {
+        #ifndef NDEBUG
+        printf("touchpad not found\r\n");
+        #endif
+        dbg_light(urgb_u32(0xf*3, 0, 0));
+    	sleep_ms(500);
+    }
 
     #ifndef NDEBUG
 	    printf("int init\r\n");
